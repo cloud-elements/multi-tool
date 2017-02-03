@@ -7,7 +7,35 @@ const pify = require('pify');
 const validFilename = require('valid-filename');
 const writeFile = require('write-file-atomic');
 
-const install = async (path, name, version) => {
+const installSync = (path, name, version) => {
+  if (!validFilename(`${name}@${version}`)) {
+    return null;
+  }
+
+  const dir = pth.join(path, `${name}@${version}`);
+  const pkg = pth.join(dir, 'package.json');
+  const js = pth.join(dir, 'index.js');
+  const pkgContents = JSON.stringify({
+    name: `${name}-${version}`,
+    version: '0.0.0',
+    main: 'index.js',
+    dependencies: {[name]: version}
+  });
+  const jsContents = `module.exports = require('${name}');`;
+
+  try {
+    mkdirp.sync(dir);
+    writeFile.sync(pkg, pkgContents);
+    writeFile.sync(js, jsContents);
+    execa.shellSync(`cd '${dir}' && npm install`);
+
+    return `${name}@${version}`;
+  } catch (err) {
+    return null;
+  }
+};
+
+const installAsync = async (path, name, version) => {
   if (!validFilename(`${name}@${version}`)) {
     return null;
   }
@@ -35,4 +63,5 @@ const install = async (path, name, version) => {
   }
 };
 
-module.exports = install;
+module.exports = installAsync;
+module.exports.sync = installSync;

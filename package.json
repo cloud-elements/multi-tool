@@ -13,9 +13,7 @@
     "nyc": "10.x",
     "xo": "0.17.x"
   },
-  "engines" : {
-    "node" : ">=7.0.0"
-  },
+  "engines": {"node": ">=7.0.0"},
   "homepage": "https://github.com/cloud-elements/multi-tool",
   "license": "ISC",
   "main": "src/index.js",
@@ -43,7 +41,8 @@
     "esnext": true,
     "rules": {
       "import/no-extraneous-dependencies": 0,
-      "import/no-unresolved": 0
+      "import/no-unresolved": 0,
+      "new-cap": 0
     },
     "space": 2
   }

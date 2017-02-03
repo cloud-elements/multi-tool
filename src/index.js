@@ -4,9 +4,14 @@ const pth = require('path');
 const execa = require('execa');
 const mkdirp = require('mkdirp');
 const pify = require('pify');
+const validFilename = require('valid-filename');
 const writeFile = require('write-file-atomic');
 
 const install = async (path, name, version) => {
+  if (!validFilename(`${name}@${version}`)) {
+    return null;
+  }
+
   const dir = pth.join(path, `${name}@${version}`);
   const pkg = pth.join(dir, 'package.json');
   const js = pth.join(dir, 'index.js');
@@ -22,7 +27,7 @@ const install = async (path, name, version) => {
     await pify(mkdirp)(dir);
     await pify(writeFile)(pkg, pkgContents);
     await pify(writeFile)(js, jsContents);
-    await execa.shell(`cd ${dir} && npm install`);
+    await execa.shell(`cd '${dir}' && npm install`);
 
     return `${name}@${version}`;
   } catch (err) {

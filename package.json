@@ -4,6 +4,7 @@
     "mkdirp": "0.5.x",
     "pify": "2.x",
     "ramda": "0.23.x",
+    "valid-filename": "2.x",
     "write-file-atomic": "1.x"
   },
   "description": "Install packages wrapped to be multi-version friendly",

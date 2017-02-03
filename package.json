@@ -1,0 +1,45 @@
+{
+  "dependencies": {
+    "execa": "0.6.x",
+    "graceful-fs": "4.x",
+    "mkdirp": "0.5.x",
+    "pify": "2.x",
+    "ramda": "0.23.x"
+  },
+  "description": "Install packages wrapped to be multi-version friendly",
+  "devDependencies": {
+    "ava": "0.17.x",
+    "nyc": "10.x",
+    "xo": "0.17.x"
+  },
+  "engines" : {
+    "node" : ">=7.0.0"
+  },
+  "homepage": "https://github.com/cloud-elements/multi-tool",
+  "license": "ISC",
+  "main": "src/index.js",
+  "name": "multi-tool",
+  "nyc": {
+    "branches": 100,
+    "functions": 100,
+    "include": ["src/**/*.js"],
+    "lines": 100,
+    "statements": 100
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cloud-elements/multi-tool.git"
+  },
+  "scripts": {
+    "clean": "rm -rf node_modules",
+    "coverage": "node --harmony node_modules/.bin/nyc report --reporter=lcov --reporter=text-lcov",
+    "lint": "node --harmony node_modules/.bin/xo",
+    "test": "node --harmony node_modules/.bin/xo && node --harmony node_modules/.bin/nyc --check-coverage node --harmony node_modules/.bin/ava",
+    "unit": "node --harmony node_modules/.bin/ava"
+  },
+  "version": "0.0.0",
+  "xo": {
+    "esnext": true,
+    "space": 2
+  }
+}

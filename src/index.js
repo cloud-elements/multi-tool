@@ -8,7 +8,7 @@ const writeFile = require('write-file-atomic');
 const writePkg = require('write-pkg');
 
 module.exports = async (path, name, version) => {
-  const concatted = `${name}-${version}`;
+  const concatted = `${name}@${version}`;
   const dir = pth.join(path, concatted);
   const pkg = pth.join(dir, 'package.json');
   const idx = pth.join(dir, 'index.js');

@@ -41,6 +41,9 @@
   "version": "0.0.0",
   "xo": {
     "esnext": true,
+    "rules": {
+      "import/no-extraneous-dependencies": 0
+    },
     "space": 2
   }
 }

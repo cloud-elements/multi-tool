@@ -8,12 +8,12 @@ const writeFile = require('write-file-atomic');
 const writePkg = require('write-pkg');
 
 module.exports = async (path, name, version) => {
-  const fullname = `${name}-${version}`;
-  const dir = pth.join(path, fullname);
+  const concatted = `${name}-${version}`;
+  const dir = pth.join(path, concatted);
   const pkg = pth.join(dir, 'package.json');
   const idx = pth.join(dir, 'index.js');
   const pkgContents = {
-    name: fullname,
+    name: concatted,
     version: '0.0.0',
     main: 'index.js',
     dependencies: {[name]: version}
@@ -26,7 +26,7 @@ module.exports = async (path, name, version) => {
     await pify(writeFile)(idx, idxContents);
     await execa.shell(`cd ${dir} && npm install`);
 
-    return fullname;
+    return concatted;
   } catch (err) {
     return null;
   }

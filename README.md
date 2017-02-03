@@ -5,7 +5,7 @@
 [![styling](http://img.shields.io/badge/code%20styling-XO-blue.svg)](https://github.com/sindresorhus/xo)
 [![build](https://circleci.com/gh/cloud-elements/multi-tool.svg?style=shield)](https://circleci.com/gh/cloud-elements/multi-tool)
 
-## Installation
+## Install
 ```javascript
 $ npm install --save multi-tool
 ```

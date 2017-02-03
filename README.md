@@ -7,8 +7,8 @@
 
 ## Install
 ```javascript
-$ npm install --save @cloudelements/multi-tool
+$ npm install --save multi-tool
 ```
 
 ## Maintainers
-* Rocky Madden (rocky@cloud-elements.com)
+* Rocky Madden ([@rockymadden](https://github.com/rockymadden))

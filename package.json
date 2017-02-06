@@ -14,6 +14,16 @@
   },
   "engines": {"node": ">=7.0.0"},
   "homepage": "https://github.com/cloud-elements/multi-tool",
+  "keywords": [
+    "install",
+    "multiple",
+    "npm",
+    "package",
+    "packages"
+    "semver",
+    "version",
+    "versioning"
+  ],
   "license": "ISC",
   "main": "src/index.js",
   "name": "multi-tool",

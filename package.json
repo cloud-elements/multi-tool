@@ -1,21 +1,29 @@
 {
   "dependencies": {
     "execa": "0.6.x",
-    "graceful-fs": "4.x",
-    "mkdirp": "0.5.x",
+    "findup-sync": "0.4.x",
+    "fs-extra": "2.x",
     "pify": "2.x",
-    "ramda": "0.23.x"
+    "valid-filename": "2.x"
   },
-  "description": "Install packages wrapped to be multi-version friendly",
+  "description": "Install multiple versions of NPM packages via semver ranges",
   "devDependencies": {
     "ava": "0.17.x",
     "nyc": "10.x",
     "xo": "0.17.x"
   },
-  "engines" : {
-    "node" : ">=7.0.0"
-  },
+  "engines": {"node": ">=7.0.0"},
   "homepage": "https://github.com/cloud-elements/multi-tool",
+  "keywords": [
+    "install",
+    "multiple",
+    "npm",
+    "package",
+    "packages",
+    "semver",
+    "version",
+    "versioning"
+  ],
   "license": "ISC",
   "main": "src/index.js",
   "name": "multi-tool",
@@ -40,6 +48,11 @@
   "version": "0.0.0",
   "xo": {
     "esnext": true,
+    "rules": {
+      "import/no-extraneous-dependencies": 0,
+      "import/no-unresolved": 0,
+      "new-cap": 0
+    },
     "space": 2
   }
 }

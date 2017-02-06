@@ -18,13 +18,13 @@ const install = async (path, name, version) => {
 
   const dir = pth.join(path, `${name}@${version}`);
   const pkg = pth.join(dir, 'package.json');
-  const js = pth.join(dir, 'index.js');
   const pkgContents = JSON.stringify({
     name: `${name}-${version}`,
     version: '0.0.0',
     main: 'index.js',
     dependencies: {[name]: version}
   });
+  const js = pth.join(dir, 'index.js');
   const jsContents = `module.exports = require('${name}');`;
 
   try {

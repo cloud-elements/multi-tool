@@ -1,9 +1,10 @@
 {
   "dependencies": {
+    "app-root-path": "2.x",
     "execa": "0.6.x",
+    "find-node-modules": "1.x",
     "fs-extra": "2.x",
     "pify": "2.x",
-    "ramda": "0.23.x",
     "valid-filename": "2.x"
   },
   "description": "Install packages wrapped to be multi-version friendly",

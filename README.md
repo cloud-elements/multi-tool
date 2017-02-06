@@ -10,5 +10,14 @@
 $ npm install --save multi-tool
 ```
 
+## Usage
+```javascript
+const multitool = require('multitool');
+
+await multitool('node_modules', 'ramda', '0.23.0');
+
+const {identity} = require('ramda@0.23.0');
+```
+
 ## Maintainers
 * Rocky Madden ([@rockymadden](https://github.com/rockymadden))

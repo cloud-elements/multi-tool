@@ -6,7 +6,12 @@ const fs = require('fs-extra');
 const pify = require('pify');
 const validFilename = require('valid-filename');
 
-const install = sync => (mkdir, mkfile, rmdir, shell) => (path, name, version) => {
+const mkdir = pify(fs.mkdirp);
+const rmdir = pify(fs.remove);
+const shell = execa.shell;
+const write = pify(fs.outputFile);
+
+const install = async (path, name, version) => {
   if (!validFilename(`${name}@${version}`)) {
     return null;
   }
@@ -22,42 +27,21 @@ const install = sync => (mkdir, mkfile, rmdir, shell) => (path, name, version) =
   });
   const jsContents = `module.exports = require('${name}');`;
 
-  if (sync) {
+  try {
+    await rmdir(dir);
+    await mkdir(dir);
+    await write(pkg, pkgContents);
+    await write(js, jsContents);
+    await shell(`cd '${dir}' && npm install`);
+
+    return `${name}@${version}`;
+  } catch (err) {
     try {
       rmdir(dir);
-      mkdir(dir);
-      mkfile(pkg, pkgContents);
-      mkfile(js, jsContents);
-      shell(`cd '${dir}' && npm install`);
+    } catch (err) { }
 
-      return `${name}@${version}`;
-    } catch (err) {
-      try {
-        rmdir(dir);
-      } catch (err) { }
-
-      return null;
-    }
-  } else {
-    return (async () => {
-      try {
-        await rmdir(dir);
-        await mkdir(dir);
-        await mkfile(pkg, pkgContents);
-        await mkfile(js, jsContents);
-        await shell(`cd '${dir}' && npm install`);
-
-        return `${name}@${version}`;
-      } catch (err) {
-        try {
-          rmdir(dir);
-        } catch (err) { }
-
-        return null;
-      }
-    })();
+    return null;
   }
 };
 
-module.exports = install(false)(pify(fs.mkdirp), pify(fs.outputFile), pify(fs.remove), execa.shell);
-module.exports.sync = install(true)(fs.mkdirpSync, fs.outputFileSync, fs.removeSync, execa.shellSync);
+module.exports = install;

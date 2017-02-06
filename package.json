@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "execa": "0.6.x",
+    "findup-sync": "0.4.x",
     "fs-extra": "2.x",
     "pify": "2.x",
     "valid-filename": "2.x"

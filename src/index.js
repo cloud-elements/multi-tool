@@ -2,6 +2,7 @@
 
 const pth = require('path');
 const execa = require('execa');
+const findup = require('findup-sync');
 const fs = require('fs-extra');
 const pify = require('pify');
 const validFilename = require('valid-filename');
@@ -14,6 +15,10 @@ const write = pify(fs.outputFile);
 const install = async (name, version, path) => {
   if (!validFilename(`${name}@${version}`)) {
     return null;
+  }
+
+  if (!path) {
+    path = findup('node_modules', {cwd: module.parent.filename});
   }
 
   const dir = pth.join(path, `${name}@${version}`);

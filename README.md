@@ -15,8 +15,10 @@ $ npm install --save multi-tool
 const multitool = require('multi-tool');
 
 await multitool('ramda', '0.23.0');
+await multitool('ramda', '0.23.x');
 
-const {identity} = require('ramda@0.23.0');
+const ramda0230 = require('ramda@0.23.0');
+const ramda023x = require('ramda@0.23.x');
 ```
 
 ## Maintainers

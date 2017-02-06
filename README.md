@@ -16,9 +16,11 @@ const multitool = require('multi-tool');
 
 await multitool('ramda', '0.23.0');
 await multitool('ramda', '0.23.x');
+await multitool('ramda', 'latest');
 
-const ramda0230 = require('ramda@0.23.0');
-const ramda023x = require('ramda@0.23.x');
+const ramda_0230 = require('ramda@0.23.0');
+const ramda_023x = require('ramda@0.23.x');
+const ramda_latest = require('ramda@latest');
 ```
 
 ## Maintainers

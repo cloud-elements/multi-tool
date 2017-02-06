@@ -42,7 +42,7 @@ const install = async (name, version, path) => {
     return `${name}@${version}`;
   } catch (err) {
     try {
-      rmdir(dir);
+      await rmdir(dir);
     } catch (err) { }
 
     return null;

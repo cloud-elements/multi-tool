@@ -1,5 +1,5 @@
 # multi-tool <sub><sup>| Install multiple versions of NPM packages via semver ranges<sup></sub>
-[![version](http://img.shields.io/badge/version-0.0.0-blue.svg)](https://www.npmjs.com/package/@cloudelements/multi-tool)
+[![version](http://img.shields.io/badge/version-0.0.1-blue.svg)](https://www.npmjs.com/package/@cloudelements/multi-tool)
 [![versioning](http://img.shields.io/badge/versioning-semver-blue.svg)](http://semver.org/)
 [![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/)
 [![styling](http://img.shields.io/badge/code%20styling-XO-blue.svg)](https://github.com/sindresorhus/xo)

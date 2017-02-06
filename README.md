@@ -12,11 +12,11 @@ $ npm install --save multi-tool
 
 ## Usage
 ```javascript
-const multitool = require('multi-tool');
+const install = require('multi-tool');
 
-await multitool('ramda', '0.23.0');
-await multitool('ramda', '0.23.x');
-await multitool('ramda', 'latest');
+await install('ramda', '0.23.0');
+await install('ramda', '0.23.x');
+await install('ramda', 'latest');
 
 const ramda_0230 = require('ramda@0.23.0');
 const ramda_023x = require('ramda@0.23.x');

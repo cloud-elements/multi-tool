@@ -11,7 +11,7 @@ const rmdir = pify(fs.remove);
 const shell = execa.shell;
 const write = pify(fs.outputFile);
 
-const install = async (path, name, version) => {
+const install = async (name, version, path) => {
   if (!validFilename(`${name}@${version}`)) {
     return null;
   }

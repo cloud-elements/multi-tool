@@ -4,8 +4,8 @@ const test = require('ava');
 const multitool = require('../src');
 
 test.serial('installing a valid package with an exact version should work', async t => {
-  const installed0 = await multitool('node_modules', 'ramda', '0.23.0');
-  const installed1 = await multitool('node_modules', 'ramda-fantasy', '0.7.0');
+  const installed0 = await multitool('ramda', '0.23.0', 'node_modules');
+  const installed1 = await multitool('ramda-fantasy', '0.7.0', 'node_modules');
   const {identity} = require('ramda@0.23.0');
   const {Maybe} = require('ramda-fantasy@0.7.0');
 
@@ -16,8 +16,8 @@ test.serial('installing a valid package with an exact version should work', asyn
 });
 
 test.serial('installing a valid package with an x-based query should work', async t => {
-  const installed0 = await multitool('node_modules', 'ramda', '0.23.x');
-  const installed1 = await multitool('node_modules', 'ramda-fantasy', '0.x');
+  const installed0 = await multitool('ramda', '0.23.x', 'node_modules');
+  const installed1 = await multitool('ramda-fantasy', '0.x', 'node_modules');
   const {identity} = require('ramda@0.23.x');
   const {Maybe} = require('ramda-fantasy@0.x');
 
@@ -28,19 +28,19 @@ test.serial('installing a valid package with an x-based query should work', asyn
 });
 
 test.serial('installing an non-existent package should return null', async t => {
-  const installed = await multitool('node_modules', 'doesnt-exist', '0.0.0');
+  const installed = await multitool('doesnt-exist', '0.0.0', 'node_modules');
 
   t.is(installed, null);
 });
 
 test.serial('installing an non-existent package version should return null', async t => {
-  const installed = await multitool('node_modules', 'ramda', '99.99.99');
+  const installed = await multitool('ramda', '99.99.99', 'node_modules');
 
   t.is(installed, null);
 });
 
 test.serial('installing an invalidly named package should return null', async t => {
-  const installed = await multitool('node_modules', 'ramda', '>=99.99.99');
+  const installed = await multitool('ramda', '>=99.99.99', 'node_modules');
 
   t.is(installed, null);
 });

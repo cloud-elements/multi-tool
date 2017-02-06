@@ -6,7 +6,7 @@
     "pify": "2.x",
     "valid-filename": "2.x"
   },
-  "description": "Install multiple versions of any NPM package via semver ranges",
+  "description": "Install multiple versions of NPM packages via semver ranges",
   "devDependencies": {
     "ava": "0.17.x",
     "nyc": "10.x",

@@ -27,6 +27,14 @@ test.serial('installing a valid package with an x-based range should work', asyn
   t.is(identity('hello'), 'hello');
 });
 
+test.serial('installing a valid scoped package should work', async t => {
+  const installed = await install('@rockymadden/now-go', 'latest');
+  const req = require('@rockymadden/now-go@latest');
+
+  t.is(installed, '@rockymadden/now-go@latest');
+  t.truthy(req);
+});
+
 test.serial('installing with an explicit path should work', async t => {
   const installed = await install('ramda', '0.23.x', 'node_modules');
   const {identity} = require('ramda@0.23.x');
@@ -62,6 +70,7 @@ test.serial('installing an invalidly named package should return an empty String
 test('validName should return true with valid argument', async t => {
   t.true(install.validName('ramda'));
   t.true(install.validName('ramda-fantasy'));
+  t.true(install.validName('@rockymadden/now-go'));
 });
 
 test('validName should return false with invalid argument', async t => {

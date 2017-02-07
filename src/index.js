@@ -18,7 +18,6 @@ const write = pify(fs.outputFile);
 
 const validName = allPass([
   is(String),
-  validFilename,
   name => {
     const check = validNpm(name);
     return check.validForNewPackages || check.validForOldPackages;

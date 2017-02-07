@@ -1,3 +1,6 @@
+## v0.1.0 <sub><sup>(2017-02-07)</sup></sub>
+* Update errors to return empty String instead of null
+
 ## v0.0.1 <sub><sup>(2017-02-06)</sup></sub>
 * Fix missing await on rmdir upon error
 

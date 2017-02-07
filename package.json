@@ -12,7 +12,7 @@
     "nyc": "10.x",
     "xo": "0.17.x"
   },
-  "engines": {"node": ">=7.0.0"},
+  "engines": {"node": ">=7.2.0"},
   "homepage": "https://github.com/cloud-elements/multi-tool",
   "keywords": [
     "install",

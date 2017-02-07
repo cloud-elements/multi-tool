@@ -14,13 +14,21 @@ $ npm install --save multi-tool
 ```javascript
 const install = require('multi-tool');
 
-await install('ramda', '0.23.0');
-await install('ramda', '0.23.x');
-await install('ramda', 'latest');
-
+const install0230 = await install('ramda', '0.23.0'); // 'ramda@0.23.0'
 const ramda0230 = require('ramda@0.23.0');
+ramda0230.identity(0);
+
+const install023x = await install('ramda', '0.23.x'); // 'ramda@0.23.x'
 const ramda023x = require('ramda@0.23.x');
+ramda023x.identity(0);
+
+const installLatest = await install('ramda', 'latest'); // 'ramda@latest'
 const ramdaLatest = require('ramda@latest');
+ramdaLatest.identity(0);
+
+const installInvalidPackage = await install('does-not-exist', 'latest'); // ''
+
+const installInvalidVersion = await install('ramda', '99.99.99'); // ''
 ```
 > __PROTIP:__ Any valid semver range that is also a valid (Li|U)nix directory name is supported.
 

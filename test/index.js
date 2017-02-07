@@ -35,6 +35,12 @@ test.serial('installing with an explicit path should work', async t => {
   t.is(identity('hello'), 'hello');
 });
 
+test.serial('installing with an invalid explicit path should return an empty String', async t => {
+  const installed = await multitool('ramda', '0.23.x', 'foo');
+
+  t.is(installed, '');
+});
+
 test.serial('installing an non-existent package should return an empty String', async t => {
   const installed = await multitool('doesnt-exist', '0.0.0');
 

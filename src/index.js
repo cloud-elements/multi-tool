@@ -4,6 +4,7 @@ const pth = require('path');
 const execa = require('execa');
 const findup = require('findup-sync');
 const fs = require('fs-extra');
+const exists = require('path-exists');
 const pify = require('pify');
 const {allPass, is, test} = require('ramda');
 const semver = require('semver');
@@ -35,6 +36,10 @@ const install = async (name, version, path) => {
 
   if (!path) {
     path = findup('node_modules', {cwd: module.parent.filename});
+  }
+
+  if (!(await exists(path))) {
+    return '';
   }
 
   const dir = pth.join(path, `${name}@${version}`);

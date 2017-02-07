@@ -16,15 +16,15 @@ const install = require('multi-tool');
 
 const install0230 = await install('ramda', '0.23.0'); // 'ramda@0.23.0'
 const ramda0230 = require('ramda@0.23.0');
-ramda0230.identity(0); // 0
+ramda0230.identity(0);
 
 const install023x = await install('ramda', '0.23.x'); // 'ramda@0.23.x'
 const ramda023x = require('ramda@0.23.x');
-ramda023x.identity(0); // 0
+ramda023x.identity(0);
 
 const installLatest = await install('ramda', 'latest'); // 'ramda@latest'
 const ramdaLatest = require('ramda@latest');
-ramdaLatest.identity(0); // 0
+ramdaLatest.identity(0);
 
 const installInvalidPackage = await install('does-not-exist', 'latest'); // ''
 

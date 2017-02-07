@@ -1,5 +1,9 @@
+## v0.2.1 <sub><sup>(2017-02-07)</sup></sub>
+* Fix installation failures using `latest` version
+* Add explicit support for scoped packages
+
 ## v0.2.0 <sub><sup>(2017-02-07)</sup></sub>
-* Add strict checking of package name and version upon install
+* Add strict checking of package name and version
 * Add exported `validName` function
 * Add exported `validVersion` function
 

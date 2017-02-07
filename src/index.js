@@ -14,7 +14,7 @@ const write = pify(fs.outputFile);
 
 const install = async (name, version, path) => {
   if (!validFilename(`${name}@${version}`)) {
-    return null;
+    return '';
   }
 
   if (!path) {
@@ -45,7 +45,7 @@ const install = async (name, version, path) => {
       await rmdir(dir);
     } catch (err) { }
 
-    return null;
+    return '';
   }
 };
 

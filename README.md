@@ -18,11 +18,11 @@ await install('ramda', '0.23.0');
 await install('ramda', '0.23.x');
 await install('ramda', 'latest');
 
-const ramda_0230 = require('ramda@0.23.0');
-const ramda_023x = require('ramda@0.23.x');
-const ramda_latest = require('ramda@latest');
+const ramda0230 = require('ramda@0.23.0');
+const ramda023x = require('ramda@0.23.x');
+const ramdaLatest = require('ramda@latest');
 ```
-> __PROTIP:__ Any valid semver range that is also a valid \*nix directory name is supported.
+> __PROTIP:__ Any valid semver range that is also a valid (Li|U)nix directory name is supported.
 
 ## Maintainers
 * Rocky Madden ([@rockymadden](https://github.com/rockymadden))

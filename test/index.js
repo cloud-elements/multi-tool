@@ -35,20 +35,20 @@ test.serial('installing with an explicit path should work', async t => {
   t.is(identity('hello'), 'hello');
 });
 
-test.serial('installing an non-existent package should return null', async t => {
+test.serial('installing an non-existent package should return an empty String', async t => {
   const installed = await multitool('doesnt-exist', '0.0.0');
 
-  t.is(installed, null);
+  t.is(installed, '');
 });
 
-test.serial('installing an non-existent package version should return null', async t => {
+test.serial('installing an non-existent package version should return an empty String', async t => {
   const installed = await multitool('ramda', '99.99.99');
 
-  t.is(installed, null);
+  t.is(installed, '');
 });
 
-test.serial('installing an invalidly named package should return null', async t => {
+test.serial('installing an invalidly named package should return an empty String', async t => {
   const installed = await multitool('ramda', '>=99.99.99');
 
-  t.is(installed, null);
+  t.is(installed, '');
 });

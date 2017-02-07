@@ -5,6 +5,8 @@ const execa = require('execa');
 const findup = require('findup-sync');
 const fs = require('fs-extra');
 const pify = require('pify');
+const {allPass, is, test} = require('ramda');
+const semver = require('semver');
 const validFilename = require('valid-filename');
 
 const mkdir = pify(fs.mkdirp);
@@ -12,8 +14,22 @@ const rmdir = pify(fs.remove);
 const shell = execa.shell;
 const write = pify(fs.outputFile);
 
+const lenUnder = n => str => str.length < n;
+
+const validName = allPass([
+  is(String),
+  lenUnder(215),
+  test(/^(?:@([^/]+?)[/])?([^/]+?)$/)
+]);
+
+const validVersion = allPass([
+  is(String),
+  validFilename,
+  ver => semver.validRange(ver)
+]);
+
 const install = async (name, version, path) => {
-  if (!validFilename(`${name}@${version}`)) {
+  if (!validName(name) || !validVersion(version)) {
     return '';
   }
 
@@ -50,3 +66,5 @@ const install = async (name, version, path) => {
 };
 
 module.exports = install;
+module.exports.validName = validName;
+module.exports.validVersion = validVersion;

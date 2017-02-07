@@ -3,28 +3,28 @@
 const test = require('ava');
 const install = require('../src');
 
-test.serial('installing a valid package with an exact version should work', async t => {
-  const installed0 = await install('ramda', '0.23.0');
-  const installed1 = await install('ramda-fantasy', '0.7.0');
-  const {identity} = require('ramda@0.23.0');
-  const {Maybe} = require('ramda-fantasy@0.7.0');
+test.serial('installing a valid package with latest version should work', async t => {
+  const installed = await install('ramda', 'latest');
+  const {identity} = require('ramda@latest');
 
-  t.is(installed0, 'ramda@0.23.0');
-  t.is(installed1, 'ramda-fantasy@0.7.0');
+  t.is(installed, 'ramda@latest');
   t.is(identity('hello'), 'hello');
-  t.true(Maybe.isNothing(Maybe.Nothing()));
 });
 
-test.serial('installing a valid package with an x-based query should work', async t => {
-  const installed0 = await install('ramda', '0.23.x');
-  const installed1 = await install('ramda-fantasy', '0.x');
-  const {identity} = require('ramda@0.23.x');
-  const {Maybe} = require('ramda-fantasy@0.x');
+test.serial('installing a valid package with an exact version should work', async t => {
+  const installed = await install('ramda', '0.23.0');
+  const {identity} = require('ramda@0.23.0');
 
-  t.is(installed0, 'ramda@0.23.x');
-  t.is(installed1, 'ramda-fantasy@0.x');
+  t.is(installed, 'ramda@0.23.0');
   t.is(identity('hello'), 'hello');
-  t.true(Maybe.isNothing(Maybe.Nothing()));
+});
+
+test.serial('installing a valid package with an x-based range should work', async t => {
+  const installed = await install('ramda', '0.23.x');
+  const {identity} = require('ramda@0.23.x');
+
+  t.is(installed, 'ramda@0.23.x');
+  t.is(identity('hello'), 'hello');
 });
 
 test.serial('installing with an explicit path should work', async t => {
@@ -57,4 +57,25 @@ test.serial('installing an invalidly named package should return an empty String
   const installed = await install('ramda', '>=99.99.99');
 
   t.is(installed, '');
+});
+
+test('validName should return true with valid argument', async t => {
+  t.true(install.validName('ramda'));
+  t.true(install.validName('ramda-fantasy'));
+});
+
+test('validName should return false with invalid argument', async t => {
+  t.false(install.validName('.ramda'));
+  t.false(install.validName('_ramda'));
+  t.false(install.validName('ramda#fantasy'));
+});
+
+test('validVersion should return true with valid argument', async t => {
+  t.true(install.validVersion('latest'));
+  t.true(install.validVersion('0.23.0'));
+  t.true(install.validVersion('0.23.x'));
+});
+
+test('validVersion should return false with invalid argument', async t => {
+  t.false(install.validVersion('>=0.23.0'));
 });

@@ -3,7 +3,10 @@
     "execa": "0.6.x",
     "findup-sync": "0.4.x",
     "fs-extra": "2.x",
+    "path-exists": "3.x",
     "pify": "2.x",
+    "ramda": "0.23.x",
+    "semver": "5.x",
     "valid-filename": "2.x"
   },
   "description": "Install multiple versions of NPM packages via semver ranges",

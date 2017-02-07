@@ -1,11 +1,11 @@
 'use strict';
 
 const test = require('ava');
-const multitool = require('../src');
+const install = require('../src');
 
 test.serial('installing a valid package with an exact version should work', async t => {
-  const installed0 = await multitool('ramda', '0.23.0');
-  const installed1 = await multitool('ramda-fantasy', '0.7.0');
+  const installed0 = await install('ramda', '0.23.0');
+  const installed1 = await install('ramda-fantasy', '0.7.0');
   const {identity} = require('ramda@0.23.0');
   const {Maybe} = require('ramda-fantasy@0.7.0');
 
@@ -16,8 +16,8 @@ test.serial('installing a valid package with an exact version should work', asyn
 });
 
 test.serial('installing a valid package with an x-based query should work', async t => {
-  const installed0 = await multitool('ramda', '0.23.x');
-  const installed1 = await multitool('ramda-fantasy', '0.x');
+  const installed0 = await install('ramda', '0.23.x');
+  const installed1 = await install('ramda-fantasy', '0.x');
   const {identity} = require('ramda@0.23.x');
   const {Maybe} = require('ramda-fantasy@0.x');
 
@@ -28,7 +28,7 @@ test.serial('installing a valid package with an x-based query should work', asyn
 });
 
 test.serial('installing with an explicit path should work', async t => {
-  const installed = await multitool('ramda', '0.23.x', 'node_modules');
+  const installed = await install('ramda', '0.23.x', 'node_modules');
   const {identity} = require('ramda@0.23.x');
 
   t.is(installed, 'ramda@0.23.x');
@@ -36,25 +36,25 @@ test.serial('installing with an explicit path should work', async t => {
 });
 
 test.serial('installing with an invalid explicit path should return an empty String', async t => {
-  const installed = await multitool('ramda', '0.23.x', 'foo');
+  const installed = await install('ramda', '0.23.x', 'foo');
 
   t.is(installed, '');
 });
 
 test.serial('installing an non-existent package should return an empty String', async t => {
-  const installed = await multitool('doesnt-exist', '0.0.0');
+  const installed = await install('doesnt-exist', '0.0.0');
 
   t.is(installed, '');
 });
 
 test.serial('installing an non-existent package version should return an empty String', async t => {
-  const installed = await multitool('ramda', '99.99.99');
+  const installed = await install('ramda', '99.99.99');
 
   t.is(installed, '');
 });
 
 test.serial('installing an invalidly named package should return an empty String', async t => {
-  const installed = await multitool('ramda', '>=99.99.99');
+  const installed = await install('ramda', '>=99.99.99');
 
   t.is(installed, '');
 });

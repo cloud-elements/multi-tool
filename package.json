@@ -30,12 +30,11 @@
     "versioning"
   ],
   "license": "ISC",
-  "main": "src/index.js",
+  "main": "index.js",
   "name": "multi-tool",
   "nyc": {
     "branches": 100,
     "functions": 100,
-    "include": ["src/**/*.js"],
     "lines": 100,
     "statements": 100
   },

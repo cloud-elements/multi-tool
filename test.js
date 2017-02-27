@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('ava');
-const install = require('../src');
+const install = require('.');
 
 test.serial('installing a valid package with latest version should work', async t => {
   const installed = await install('ramda', 'latest');

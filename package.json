@@ -7,16 +7,17 @@
     "pify": "2.x",
     "ramda": "0.23.x",
     "semver": "5.x",
-    "validate-npm-package-name": "2.x",
+    "validate-npm-package-name": "3.x",
     "valid-filename": "2.x"
   },
   "description": "Install multiple versions of NPM packages via semver ranges",
   "devDependencies": {
-    "ava": "0.17.x",
+    "ava": "0.18.x",
+    "npm-check": "5.x",
     "nyc": "10.x",
     "xo": "0.17.x"
   },
-  "engines": {"node": ">=7.2.0"},
+  "engines": {"node": ">=7.6.0"},
   "homepage": "https://github.com/cloud-elements/multi-tool",
   "keywords": [
     "install",
@@ -30,12 +31,11 @@
     "versioning"
   ],
   "license": "ISC",
-  "main": "src/index.js",
+  "main": "index.js",
   "name": "multi-tool",
   "nyc": {
     "branches": 100,
     "functions": 100,
-    "include": ["src/**/*.js"],
     "lines": 100,
     "statements": 100
   },
@@ -44,11 +44,13 @@
     "url": "git://github.com/cloud-elements/multi-tool.git"
   },
   "scripts": {
-    "clean": "rm -rf node_modules",
-    "coverage": "node --harmony node_modules/.bin/nyc report --reporter=lcov --reporter=text-lcov",
-    "lint": "node --harmony node_modules/.bin/xo",
-    "test": "node --harmony node_modules/.bin/xo && node --harmony node_modules/.bin/nyc --check-coverage node --harmony node_modules/.bin/ava",
-    "unit": "node --harmony node_modules/.bin/ava"
+    "clean": "rm -rf .nyc_output && rm -rf coverage && rm -rf node_modules",
+    "cover": "nyc report --reporter=text-lcov",
+    "coverage": "nyc report --reporter=lcov && open ./coverage/lcov-report/index.html",
+    "depend": "npm-check",
+    "lint": "xo",
+    "test": "xo && { npm-check || true; } && nyc --check-coverage ava",
+    "unit": "ava"
   },
   "version": "0.2.1",
   "xo": {

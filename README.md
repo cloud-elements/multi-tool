@@ -19,7 +19,7 @@ $ npm install --save multi-tool
 A path to the `node_modules` directory you wish to install against is required. You will be given a partially applied
 set of functions upon `require` that will then act against said path.
 ```javascript
-const install = require('multi-tool')(pathToNodeModules);
+const install = require('multi-tool')(path);
 ```
 
 ### Custom invalidators:
@@ -34,19 +34,19 @@ package).
 #### Invalidate always:
 ```javascript
 const invalidator = (name, version, ago) => ago >= 0;
-const install = require('multi-tool')(pathToNodeModules, invalidator);
+const install = require('multi-tool')(path, invalidator);
 ```
 
 #### Invalidate never:
 ```javascript
 const invalidator = (name, version, ago) => ago >= Number.MAX_SAFE_INTEGER;
-const install = require('multi-tool')(pathToNodeModules, invalidator);
+const install = require('multi-tool')(path, invalidator);
 ```
 
 #### Invalidate only `latest` versions and only after 10 minutes:
 ```javascript
 const invalidator = (name, version, ago) => version === 'latest' && ago >= 10000;
-const install = require('multi-tool')(pathToNodeModules, invalidator);
+const install = require('multi-tool')(path, invalidator);
 ```
 
 ### Install and use exact version:

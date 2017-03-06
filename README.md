@@ -52,28 +52,32 @@ const install = require('multi-tool')(path, invalidator);
 ```javascript
 const installed = await install('ramda', 'latest'); // 'ramda@latest'
 const R = require('ramda@latest');
-R.identity(0); // 0
+
+R.identity(0);
 ```
 
 ### Install and use exact version:
 ```javascript
 const installed = await install('ramda', '0.23.0'); // 'ramda@0.23.0'
 const R = require('ramda@0.23.0');
-R.identity(0); // 0
+
+R.identity(0);
 ```
 
 ### Install and use x-based version:
 ```javascript
 const installed = await install('ramda', '0.23.x'); // 'ramda@0.23.x'
 const R = require('ramda@0.23.x');
-R.identity(0); // 0
+
+R.identity(0);
 ```
 
 ### Install and use tilde-based version:
 ```javascript
 const installed = await install('ramda', '~0.22.1'); // 'ramda@~0.22.1'
 const R = require('ramda@~0.22.1');
-R.identity(0); // 0
+
+R.identity(0);
 ```
 
 ### Install invalid package:

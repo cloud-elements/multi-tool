@@ -29,16 +29,22 @@ installed package should be updated. This is accomplished via a higher-order fun
 last successfully installed and is executed on your behalf upon each `install`. The function should return a `Boolean`
 value which when true will invalidate the previously successfully installed package and reinstall.
 
-#### Always invalidate:
+#### Invalidate always:
 ```javascript
-const alwaysInvalidator = (name, version, ago) => ago >= 0;
-const install = require('multi-tool')(pathToNodeModules, alwaysInvalidator);
+const invalidator = (name, version, ago) => ago >= 0;
+const install = require('multi-tool')(pathToNodeModules, invalidator);
 ```
 
-#### Never invalidate:
+#### Invalidate never:
 ```javascript
-const neverInvalidator = (name, version, ago) => ago >= Number.MAX_SAFE_INTEGER;
-const install = require('multi-tool')(pathToNodeModules, neverInvalidator);
+const invalidator = (name, version, ago) => ago >= Number.MAX_SAFE_INTEGER;
+const install = require('multi-tool')(pathToNodeModules, invalidator);
+```
+
+#### Invalidate `latest` versions after 10 minutes:
+```javascript
+const invalidator = (name, version, ago) => version === 'latest' && ago >= 10000;
+const install = require('multi-tool')(pathToNodeModules, invalidator);
 ```
 
 ### Install and use exact version:

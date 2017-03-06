@@ -34,6 +34,14 @@ test.serial('installing a valid package with an x-based range should work', asyn
 	t.is(identity('hello'), 'hello');
 });
 
+test.serial('installing a valid package with an tilde-based range should work', async t => {
+	const installed = await install('ramda', '~0.23.0');
+	const {identity} = require('ramda@~0.23.0');
+
+	t.is(installed, 'ramda@~0.23.0');
+	t.is(identity('hello'), 'hello');
+});
+
 test.serial('installing a valid scoped package should work', async t => {
 	const installed = await install('@rockymadden/now-go', 'latest');
 	const req = require('@rockymadden/now-go@latest');

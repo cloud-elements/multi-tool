@@ -21,33 +21,6 @@ set of functions upon `require` that will then act against said path.
 const install = require('multi-tool')(path);
 ```
 
-### Custom invalidators (optional):
-It is possible to use custom invalidators to customize when `multi-tool` should assume an already successfully
-installed package should be reinstalled. This is accomplished via a higher-order function passed as an argument upon
-`require`. The invalidator function is executed upon each `install`. The invalidator function is provided the package
-`name`, the package `version`, and how many milliseconds `ago` the package at hand was last successfully installed.
-The invalidator function should return a `Boolean` value which when true will invalidate the previously successfully
-installed package and reinstall. The default invalidator will always invalidate (i.e. every `install` reinstalls the
-package).
-
-#### Invalidate always:
-```javascript
-const invalidator = (name, version, ago) => ago >= 0;
-const install = require('multi-tool')(path, invalidator);
-```
-
-#### Invalidate never:
-```javascript
-const invalidator = (name, version, ago) => ago >= Number.MAX_SAFE_INTEGER;
-const install = require('multi-tool')(path, invalidator);
-```
-
-#### Invalidate only latest versions and only after 10 minutes:
-```javascript
-const invalidator = (name, version, ago) => version === 'latest' && ago >= 10000;
-const install = require('multi-tool')(path, invalidator);
-```
-
 ### Install and use latest version:
 ```javascript
 const installed = await install('ramda', 'latest'); // 'ramda@latest'
@@ -88,6 +61,33 @@ const installed = await install('package-doesnt-exist', 'latest'); // ''
 ### Install invalid version:
 ```javascript
 const installed = await install('ramda', '99.99.99'); // ''
+```
+
+### Custom invalidators (optional):
+It is possible to use custom invalidators to customize when `multi-tool` should assume an already successfully
+installed package should be reinstalled. This is accomplished via a higher-order function passed as an argument upon
+`require`. The invalidator function is executed upon each `install`. The invalidator function is provided the package
+`name`, the package `version`, and how many milliseconds `ago` the package at hand was last successfully installed.
+The invalidator function should return a `Boolean` value which when true will invalidate the previously successfully
+installed package and reinstall. The default invalidator will always invalidate (i.e. every `install` reinstalls the
+package).
+
+#### Invalidate always:
+```javascript
+const invalidator = (name, version, ago) => ago >= 0;
+const install = require('multi-tool')(path, invalidator);
+```
+
+#### Invalidate never:
+```javascript
+const invalidator = (name, version, ago) => ago >= Number.MAX_SAFE_INTEGER;
+const install = require('multi-tool')(path, invalidator);
+```
+
+#### Invalidate only latest versions and only after 10 minutes:
+```javascript
+const invalidator = (name, version, ago) => version === 'latest' && ago >= 10000;
+const install = require('multi-tool')(path, invalidator);
 ```
 
 ## Maintainers

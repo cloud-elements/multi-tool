@@ -79,7 +79,7 @@ R.identity(0); // 0
 
 ### Install invalid package:
 ```javascript
-const installed = await install('does-not-exist', 'latest'); // ''
+const installed = await install('package-doesnt-exist', 'latest'); // ''
 ```
 
 ### Install invalid version:

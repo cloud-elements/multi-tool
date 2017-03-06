@@ -1,8 +1,10 @@
 {
   "dependencies": {
+    "date-fns": "1.28.x",
     "execa": "0.6.x",
     "fs-extra": "2.x",
-    "path-exists": "3.x",
+    "graceful-fs": "4.x",
+    "package-json": "3.x",
     "pify": "2.x",
     "ramda": "0.23.x",
     "semver": "5.x",
@@ -57,7 +59,8 @@
     "rules": {
       "import/no-extraneous-dependencies": 0,
       "import/no-unresolved": 0,
-      "new-cap": 0
+      "new-cap": 0,
+      "no-else-return": 0
     }
   }
 }

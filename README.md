@@ -6,32 +6,59 @@
 [![paradigm](http://img.shields.io/badge/paradigm-functional-blue.svg)](https://en.wikipedia.org/wiki/Functional_programming)
 [![build](https://circleci.com/gh/cloud-elements/multi-tool.svg?style=shield)](https://circleci.com/gh/cloud-elements/multi-tool)
 
+Install multiple versions of NPM packages via semver ranges, at runtime, that are also a valid (Li|U)nix directory
+names.
+
 ## Install
 ```javascript
 $ npm install --save multi-tool
 ```
 
 ## Usage
+### Requiring:
+A path to the `node_modules` directory you wish to install against is required. You will be given a partially applied
+set of functions that will then act against said path.
 ```javascript
 const install = require('multi-tool')(pathToNodeModules);
+```
 
-const install0230 = await install('ramda', '0.23.0'); // 'ramda@0.23.0'
-const ramda0230 = require('ramda@0.23.0');
-ramda0230.identity(0);
+### Install and use exact version:
+```javascript
+const installed = await install('ramda', '0.23.0'); // 'ramda@0.23.0'
+const R = require('ramda@0.23.0');
+R.identity(0); // 0
+```
 
-const install023x = await install('ramda', '0.23.x'); // 'ramda@0.23.x'
-const ramda023x = require('ramda@0.23.x');
-ramda023x.identity(0);
+### Install and use x-based version:
+```javascript
+const installed = await install('ramda', '0.23.x'); // 'ramda@0.23.x'
+const R = require('ramda@0.23.x');
+R.identity(0); // 0
+```
 
-const installLatest = await install('ramda', 'latest'); // 'ramda@latest'
-const ramdaLatest = require('ramda@latest');
-ramdaLatest.identity(0);
+### Install and use tilde-based version:
+```javascript
+const installed = await install('ramda', '~0.22.1'); // 'ramda@~0.22.1'
+const R = require('ramda@~0.22.1');
+R.identity(0); // 0
+```
 
+### Install and use latest version:
+```javascript
+const installed = await install('ramda', 'latest'); // 'ramda@latest'
+const R = require('ramda@latest');
+R.identity(0); // 0
+```
+
+### Install invalid package:
+```javascript
 const installInvalidPackage = await install('does-not-exist', 'latest'); // ''
+```
 
+### Install invalid version:
+```javascript
 const installInvalidVersion = await install('ramda', '99.99.99'); // ''
 ```
-> __PROTIP:__ Any valid semver range that is also a valid (Li|U)nix directory name is supported.
 
 ## Maintainers
 * Rocky Madden ([@rockymadden](https://github.com/rockymadden))

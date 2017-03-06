@@ -11,7 +11,7 @@
     "validate-npm-package-name": "3.x",
     "valid-filename": "2.x"
   },
-  "description": "Install multiple versions of NPM packages via semver ranges",
+  "description": "Install multiple versions of NPM packages as dependencies",
   "devDependencies": {
     "ava": "0.18.x",
     "npm-check": "5.x",

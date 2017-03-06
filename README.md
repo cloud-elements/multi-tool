@@ -91,7 +91,7 @@ const install = require('multi-tool')(path, invalidator);
 
 #### Invalidate only latest versions and only after 10 minutes:
 ```javascript
-const invalidator = (name, version, ago) => version === 'latest' && ago >= 10000;
+const invalidator = (name, version, ago) => version === 'latest' && ago >= 600000;
 const install = require('multi-tool')(path, invalidator);
 ```
 

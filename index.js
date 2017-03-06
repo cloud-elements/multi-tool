@@ -17,58 +17,58 @@ const shell = execa.shell;
 const write = pify(fs.outputFile);
 
 const validName = allPass([
-  is(String),
-  name => {
-    const check = validNpm(name);
-    return check.validForNewPackages || check.validForOldPackages;
-  }
+	is(String),
+	name => {
+		const check = validNpm(name);
+		return check.validForNewPackages || check.validForOldPackages;
+	}
 ]);
 
 const validVersion = allPass([
-  is(String),
-  validFilename,
-  ver => ver === 'latest' || semver.validRange(ver)
+	is(String),
+	validFilename,
+	ver => ver === 'latest' || semver.validRange(ver)
 ]);
 
 const install = async (name, version, path) => {
-  if (!validName(name) || !validVersion(version)) {
-    return '';
-  }
+	if (!validName(name) || !validVersion(version)) {
+		return '';
+	}
 
-  if (!path) {
-    path = findup('node_modules', {cwd: module.parent.filename});
-  }
+	if (!path) {
+		path = findup('node_modules', {cwd: module.parent.filename});
+	}
 
-  if (!(await exists(path))) {
-    return '';
-  }
+	if (!(await exists(path))) {
+		return '';
+	}
 
-  const dir = pth.join(path, `${name}@${version}`);
-  const pkgPath = pth.join(dir, 'package.json');
-  const pkgContents = JSON.stringify({
-    name: `${name}-${version}`,
-    version: '0.0.0',
-    main: 'index.js',
-    dependencies: {[name]: version}
-  });
-  const jsPath = pth.join(dir, 'index.js');
-  const jsContents = `module.exports = require('${name}');`;
+	const dir = pth.join(path, `${name}@${version}`);
+	const pkgPath = pth.join(dir, 'package.json');
+	const pkgContents = JSON.stringify({
+		name: `${name}-${version}`,
+		version: '0.0.0',
+		main: 'index.js',
+		dependencies: {[name]: version}
+	});
+	const jsPath = pth.join(dir, 'index.js');
+	const jsContents = `module.exports = require('${name}');`;
 
-  try {
-    await rmdir(dir);
-    await mkdir(dir);
-    await write(pkgPath, pkgContents);
-    await write(jsPath, jsContents);
-    await shell(`cd '${dir}' && npm install`);
+	try {
+		await rmdir(dir);
+		await mkdir(dir);
+		await write(pkgPath, pkgContents);
+		await write(jsPath, jsContents);
+		await shell(`cd '${dir}' && npm install`);
 
-    return `${name}@${version}`;
-  } catch (err) {
-    try {
-      await rmdir(dir);
-    } catch (err) { }
+		return `${name}@${version}`;
+	} catch (err) {
+		try {
+			await rmdir(dir);
+		} catch (err) { }
 
-    return '';
-  }
+		return '';
+	}
 };
 
 module.exports = install;

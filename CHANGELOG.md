@@ -1,3 +1,7 @@
+## v0.3.0 <sub><sup>(2017-03-06)</sup></sub>
+* Add custom invalidators
+* Update `modules.export` to export partially applied install with `path` and `invalidator`
+
 ## v0.2.1 <sub><sup>(2017-02-07)</sup></sub>
 * Fix installation failures using `latest` version
 * Add explicit support for scoped packages

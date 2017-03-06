@@ -1,5 +1,5 @@
 # multi-tool <sub><sup>| Install multiple versions of NPM packages as dependencies<sup></sub>
-[![version](http://img.shields.io/badge/version-0.2.1-blue.svg)](https://www.npmjs.com/package/@cloudelements/multi-tool)
+[![version](http://img.shields.io/badge/version-0.3.0-blue.svg)](https://www.npmjs.com/package/@cloudelements/multi-tool)
 [![versioning](http://img.shields.io/badge/versioning-semver-blue.svg)](http://semver.org/)
 [![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/)
 [![styling](http://img.shields.io/badge/styling-xo-blue.svg)](https://github.com/sindresorhus/xo)
@@ -8,7 +8,8 @@
 
 Install multiple versions of NPM packages as dependencies at runtime. Use any semver ranges which are also a valid
 (Li|U)nix directory names as your versions and `require` them intuitively (e.g. `require('ramda@0.23.x')`,
-`require('ramda@~0.22.1')`, `require('ramda@latest')`). Leverage custom invalidators to automatically keep installed packages up-to-date.
+`require('ramda@~0.22.1')`, `require('ramda@latest')`). Leverage custom invalidators to automatically keep installed
+packages up-to-date.
 
 ## Install
 ```javascript

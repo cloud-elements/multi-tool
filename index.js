@@ -1,76 +1,96 @@
 'use strict';
 
 const pth = require('path');
+const diff = require('date-fns/difference_in_milliseconds');
 const execa = require('execa');
-const findup = require('findup-sync');
-const fs = require('fs-extra');
-const exists = require('path-exists');
+const {mkdirp, outputFile, remove} = require('fs-extra');
+const {stat} = require('graceful-fs');
+const exists = require('package-json');
 const pify = require('pify');
-const {allPass, is} = require('ramda');
+const {allPass, always, F, identity, is, isEmpty, T} = require('ramda');
 const semver = require('semver');
 const validNpm = require('validate-npm-package-name');
 const validFilename = require('valid-filename');
 
-const mkdir = pify(fs.mkdirp);
-const rmdir = pify(fs.remove);
+const mkdir = pify(mkdirp);
+const rmdir = pify(remove);
 const shell = execa.shell;
-const write = pify(fs.outputFile);
+const stats = path => pify(stat)(path).then(identity).catch(always({}));
+const write = pify(outputFile);
+
+const validExists = (name, version) => exists(name, version).then(T).catch(F);
 
 const validName = allPass([
-  is(String),
-  name => {
-    const check = validNpm(name);
-    return check.validForNewPackages || check.validForOldPackages;
-  }
+	is(String),
+	name => {
+		const check = validNpm(name);
+		return check.validForNewPackages || check.validForOldPackages;
+	}
 ]);
 
 const validVersion = allPass([
-  is(String),
-  validFilename,
-  ver => ver === 'latest' || semver.validRange(ver)
+	is(String),
+	validFilename,
+	ver => ver === 'latest' || semver.validRange(ver)
 ]);
 
-const install = async (name, version, path) => {
-  if (!validName(name) || !validVersion(version)) {
-    return '';
-  }
+const install = (path, invalidator) => async (name, version) => {
+	if (isEmpty(await stats(path))) {
+		return '';
+	} else if (!validName(name) || !validVersion(version)) {
+		return '';
+	}
 
-  if (!path) {
-    path = findup('node_modules', {cwd: module.parent.filename});
-  }
+	const pkgName = `${name}@${version}`;
+	const pkgPath = pth.join(path, pkgName);
+	const pkgPathStats = await stats(pkgPath);
+	const pkgJsonPath = pth.join(pkgPath, 'package.json');
+	const pkgJsonContents = JSON.stringify({
+		name: `${name}-${version}`,
+		version: '0.0.0',
+		main: 'index.js',
+		dependencies: {[name]: version}
+	});
+	const pkgJsPath = pth.join(pkgPath, 'index.js');
+	const pkgJsContents = `module.exports = require('${name}');`;
 
-  if (!(await exists(path))) {
-    return '';
-  }
+	const performInstall = async () => {
+		try {
+			await rmdir(pkgPath);
+			await mkdir(pkgPath);
+			await write(pkgJsonPath, pkgJsonContents);
+			await write(pkgJsPath, pkgJsContents);
+			await shell(`cd '${pkgPath}' && npm install`);
 
-  const dir = pth.join(path, `${name}@${version}`);
-  const pkgPath = pth.join(dir, 'package.json');
-  const pkgContents = JSON.stringify({
-    name: `${name}-${version}`,
-    version: '0.0.0',
-    main: 'index.js',
-    dependencies: {[name]: version}
-  });
-  const jsPath = pth.join(dir, 'index.js');
-  const jsContents = `module.exports = require('${name}');`;
+			return pkgName;
+		} catch (err) /* istanbul ignore next */ {
+			try {
+				await rmdir(pkgPath);
+			} catch (err) { }
 
-  try {
-    await rmdir(dir);
-    await mkdir(dir);
-    await write(pkgPath, pkgContents);
-    await write(jsPath, jsContents);
-    await shell(`cd '${dir}' && npm install`);
+			return '';
+		}
+	};
 
-    return `${name}@${version}`;
-  } catch (err) {
-    try {
-      await rmdir(dir);
-    } catch (err) { }
+	const ago = isEmpty(pkgPathStats) ? Number.MAX_SAFE_INTEGER : diff(new Date(), pkgPathStats.ctime);
+	const invalidate = await invalidator(name, version, ago);
 
-    return '';
-  }
+	if (invalidate) {
+		if (!(await validExists(name, version))) {
+			return '';
+		}
+
+		return await performInstall();
+	} else {
+		return pkgName;
+	}
 };
 
-module.exports = install;
-module.exports.validName = validName;
-module.exports.validVersion = validVersion;
+module.exports = (path, invalidator = T) => {
+	const exp = install(path, invalidator);
+	exp.validExists = validExists;
+	exp.validName = validName;
+	exp.validVersion = validVersion;
+
+	return exp;
+};

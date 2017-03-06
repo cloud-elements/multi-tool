@@ -2,7 +2,6 @@
 
 const pth = require('path');
 const execa = require('execa');
-const findup = require('findup-sync');
 const fs = require('fs-extra');
 const exists = require('path-exists');
 const pify = require('pify');
@@ -30,16 +29,10 @@ const validVersion = allPass([
 	ver => ver === 'latest' || semver.validRange(ver)
 ]);
 
-const install = async (name, version, path) => {
+const install = path => async (name, version) => {
 	if (!validName(name) || !validVersion(version)) {
 		return '';
-	}
-
-	if (!path) {
-		path = findup('node_modules', {cwd: module.parent.filename});
-	}
-
-	if (!(await exists(path))) {
+	} else if (!(await exists(path))) {
 		return '';
 	}
 
@@ -71,6 +64,10 @@ const install = async (name, version, path) => {
 	}
 };
 
-module.exports = install;
-module.exports.validName = validName;
-module.exports.validVersion = validVersion;
+module.exports = path => {
+	const exp = install(path);
+	exp.validName = validName;
+	exp.validVersion = validVersion;
+
+	return exp;
+};

@@ -28,7 +28,8 @@ installed package should be reinstalled. This is accomplished via a higher-order
 `require`. The invalidator function is executed upon each `install`. The invalidator function is provided the package
 `name`, the package `version`, and how many milliseconds `ago` the package at hand was last successfully installed.
 The invalidator function should return a `Boolean` value which when true will invalidate the previously successfully
-installed package and reinstall.
+installed package and reinstall. The default invalidator will always invalidate (i.e. every `install` reinstalls the
+package).
 
 #### Invalidate always:
 ```javascript

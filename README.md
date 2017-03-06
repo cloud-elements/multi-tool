@@ -49,6 +49,13 @@ const invalidator = (name, version, ago) => version === 'latest' && ago >= 10000
 const install = require('multi-tool')(path, invalidator);
 ```
 
+### Install and use latest version:
+```javascript
+const installed = await install('ramda', 'latest'); // 'ramda@latest'
+const R = require('ramda@latest');
+R.identity(0); // 0
+```
+
 ### Install and use exact version:
 ```javascript
 const installed = await install('ramda', '0.23.0'); // 'ramda@0.23.0'
@@ -67,13 +74,6 @@ R.identity(0); // 0
 ```javascript
 const installed = await install('ramda', '~0.22.1'); // 'ramda@~0.22.1'
 const R = require('ramda@~0.22.1');
-R.identity(0); // 0
-```
-
-### Install and use latest version:
-```javascript
-const installed = await install('ramda', 'latest'); // 'ramda@latest'
-const R = require('ramda@latest');
 R.identity(0); // 0
 ```
 

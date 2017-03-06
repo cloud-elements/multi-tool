@@ -2,7 +2,8 @@
 [![version](http://img.shields.io/badge/version-0.2.1-blue.svg)](https://www.npmjs.com/package/@cloudelements/multi-tool)
 [![versioning](http://img.shields.io/badge/versioning-semver-blue.svg)](http://semver.org/)
 [![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/)
-[![styling](http://img.shields.io/badge/code%20styling-XO-blue.svg)](https://github.com/sindresorhus/xo)
+[![styling](http://img.shields.io/badge/styling-xo-blue.svg)](https://github.com/sindresorhus/xo)
+[![paradigm](http://img.shields.io/badge/paradigm-functional-blue.svg)](https://en.wikipedia.org/wiki/Functional_programming)
 [![build](https://circleci.com/gh/cloud-elements/multi-tool.svg?style=shield)](https://circleci.com/gh/cloud-elements/multi-tool)
 
 ## Install
@@ -12,7 +13,7 @@ $ npm install --save multi-tool
 
 ## Usage
 ```javascript
-const install = require('multi-tool');
+const install = require('multi-tool')(pathToNodeModules);
 
 const install0230 = await install('ramda', '0.23.0'); // 'ramda@0.23.0'
 const ramda0230 = require('ramda@0.23.0');

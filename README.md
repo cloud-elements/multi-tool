@@ -6,8 +6,9 @@
 [![paradigm](http://img.shields.io/badge/paradigm-functional-blue.svg)](https://en.wikipedia.org/wiki/Functional_programming)
 [![build](https://circleci.com/gh/cloud-elements/multi-tool.svg?style=shield)](https://circleci.com/gh/cloud-elements/multi-tool)
 
-Install multiple versions of NPM packages via semver ranges, at runtime, that are also a valid (Li|U)nix directory
-names. Leverage custom invalidators to automatically keep installed packages up-to-date.
+Install multiple versions of NPM packages as dependencies at runtime. Use any semver ranges which are also a valid
+(Li|U)nix directory names as your versions and `require` them intuitively (e.g. `require('ramda@0.23.x')`,
+`require('ramda@~0.22.1')`, `require('ramda@latest')`). Leverage custom invalidators to automatically keep installed packages up-to-date.
 
 ## Install
 ```javascript

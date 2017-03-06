@@ -24,7 +24,7 @@ const install = require('multi-tool')(pathToNodeModules);
 
 ### Custom invalidators:
 It is possible to use custom invalidators to customize when `multi-tool` should assume an already successfully
-installed package should be updated. This is accomplished via a higher-order function passed as an argument upon
+installed package should be reinstalled. This is accomplished via a higher-order function passed as an argument upon
 `require`. The invalidator function is executed upon each `install`. The invalidator function is provided the package
 `name`, the package `version`, and how many milliseconds `ago` the package at hand was last successfully installed.
 The invalidator function should return a `Boolean` value which when true will invalidate the previously successfully

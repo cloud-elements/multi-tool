@@ -17,9 +17,28 @@ $ npm install --save multi-tool
 ## Usage
 ### Requiring:
 A path to the `node_modules` directory you wish to install against is required. You will be given a partially applied
-set of functions that will then act against said path.
+set of functions upon `require` that will then act against said path.
 ```javascript
 const install = require('multi-tool')(pathToNodeModules);
+```
+
+### Custom invalidators:
+It is possible to use a custom invalidators to customize when `multi-tool` should assume an already installed package
+should be updated. This is accomplished via a higher-order function passed as an argument upon `require`. The function
+is provided the package `name`, the package `version`, and how many milliseconds `ago` it was last successfully
+installed. The function should return a `Boolean` value, which when true will invalidate the previously installed
+package and reinstall.
+
+#### Always invalidate:
+```javascript
+const alwaysInvalidator = (name, version, ago) => ago >= 0;
+const install = require('multi-tool')(pathToNodeModules, alwaysInvalidator);
+```
+
+#### Never invalidate:
+```javascript
+const neverInvalidator = (name, version, ago) => ago >= Number.MAX_SAFE_INTEGER;
+const install = require('multi-tool')(pathToNodeModules, neverInvalidator);
 ```
 
 ### Install and use exact version:

@@ -7,7 +7,7 @@
 [![build](https://circleci.com/gh/cloud-elements/multi-tool.svg?style=shield)](https://circleci.com/gh/cloud-elements/multi-tool)
 
 Install multiple versions of NPM packages via semver ranges, at runtime, that are also a valid (Li|U)nix directory
-names.
+names. Leverage custom invalidators to automatically keep installed packages up-to-date.
 
 ## Install
 ```javascript

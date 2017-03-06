@@ -52,12 +52,12 @@ R.identity(0); // 0
 
 ### Install invalid package:
 ```javascript
-const installInvalidPackage = await install('does-not-exist', 'latest'); // ''
+const installed = await install('does-not-exist', 'latest'); // ''
 ```
 
 ### Install invalid version:
 ```javascript
-const installInvalidVersion = await install('ramda', '99.99.99'); // ''
+const installed = await install('ramda', '99.99.99'); // ''
 ```
 
 ## Maintainers

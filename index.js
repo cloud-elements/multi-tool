@@ -7,7 +7,7 @@ const {mkdirp, outputFile, remove} = require('fs-extra');
 const {stat} = require('graceful-fs');
 const exists = require('package-json');
 const pify = require('pify');
-const {allPass, always, F, identity, is, isEmpty, or, T} = require('ramda');
+const {allPass, always, F, identity, is, isEmpty, T} = require('ramda');
 const semver = require('semver');
 const validNpm = require('validate-npm-package-name');
 const validFilename = require('valid-filename');
@@ -74,7 +74,7 @@ const install = (path, invalidator) => async (name, version) => {
 
 	const ago = isEmpty(pkgPathStats) ? Number.MAX_SAFE_INTEGER : diff(new Date(), pkgPathStats.ctime);
 
-	if (or(ago === Number.MAX_SAFE_INTEGER, invalidator(name, version, ago))) {
+	if (ago === Number.MAX_SAFE_INTEGER || invalidator(name, version, ago)) {
 		if (!(await validExists(name, version))) {
 			return '';
 		}

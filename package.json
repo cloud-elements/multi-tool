@@ -54,7 +54,7 @@
     "test": "xo && { npm-check || true; } && nyc --check-coverage ava",
     "unit": "ava"
   },
-  "version": "0.3.0",
+  "version": "0.3.1",
   "xo": {
     "esnext": true,
     "rules": {

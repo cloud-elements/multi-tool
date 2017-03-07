@@ -1,4 +1,4 @@
-# multi-tool <sub><sup>| Install and require multiple versions of NPM packages as dependencies<sup></sub>
+# multi-tool <sub><sup>| Install and require multiple versions of NPM packages<sup></sub>
 [![version](http://img.shields.io/badge/version-0.3.0-blue.svg)](https://www.npmjs.com/package/@cloudelements/multi-tool)
 [![versioning](http://img.shields.io/badge/versioning-semver-blue.svg)](http://semver.org/)
 [![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/)
@@ -6,10 +6,9 @@
 [![paradigm](http://img.shields.io/badge/paradigm-functional-blue.svg)](https://en.wikipedia.org/wiki/Functional_programming)
 [![build](https://circleci.com/gh/cloud-elements/multi-tool.svg?style=shield)](https://circleci.com/gh/cloud-elements/multi-tool)
 
-Install multiple versions of NPM packages as dependencies at runtime. Use any semver ranges which are also a valid
-(Li|U)nix directory names as your versions and `require` them intuitively (e.g. `require('ramda@0.23.x')`,
-`require('ramda@~0.22.1')`, `require('ramda@latest')`). Leverage custom invalidators to automatically keep installed
-packages up-to-date.
+Install multiple versions of NPM packages at runtime. Use any semver ranges which are also a valid (Li|U)nix directory
+names as your versions and `require` them intuitively (e.g. `require('ramda@0.23.x')`, `require('ramda@~0.22.1')`,
+`require('ramda@latest')`). Leverage custom invalidators to automatically keep installed packages up-to-date.
 
 ## Install
 ```javascript

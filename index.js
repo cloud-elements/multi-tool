@@ -73,9 +73,8 @@ const install = (path, invalidator) => async (name, version) => {
 	};
 
 	const ago = isEmpty(pkgPathStats) ? Number.MAX_SAFE_INTEGER : diff(new Date(), pkgPathStats.ctime);
-	const invalidate = await invalidator(name, version, ago);
 
-	if (invalidate) {
+	if (ago === Number.MAX_SAFE_INTEGER || invalidator(name, version, ago)) {
 		if (!(await validExists(name, version))) {
 			return '';
 		}

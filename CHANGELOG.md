@@ -1,3 +1,6 @@
+## v0.3.1 <sub><sup>(2017-03-06)</sup></sub>
+* Fix not installed packages being passed to invalidators
+
 ## v0.3.0 <sub><sup>(2017-03-06)</sup></sub>
 * Add custom invalidators
 * Update `modules.export` to export partially applied install with `path` and `invalidator`

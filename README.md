@@ -11,7 +11,7 @@ names as your versions and `require` them intuitively (e.g. `require('ramda@0.23
 `require('ramda@latest')`). Leverage custom invalidators to automatically keep installed packages up-to-date.
 
 ## Install
-```javascript
+```bash
 $ npm install --save multi-tool
 ```
 

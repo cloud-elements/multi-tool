@@ -1,3 +1,6 @@
+## v0.3.2 <sub><sup>(2017-03-2)</sup></sub>
+* Fix mode upon directory and file creation
+
 ## v0.3.1 <sub><sup>(2017-03-06)</sup></sub>
 * Fix not installed packages being passed to invalidators
 

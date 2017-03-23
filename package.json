@@ -16,7 +16,7 @@
     "ava": "0.18.x",
     "npm-check": "5.x",
     "nyc": "10.x",
-    "xo": "0.17.x"
+    "xo": "0.18.x"
   },
   "engines": {"node": ">=7.6.0"},
   "homepage": "https://github.com/cloud-elements/multi-tool",

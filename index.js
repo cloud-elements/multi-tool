@@ -79,7 +79,7 @@ const install = (path, invalidator) => async (name, version) => {
 			return '';
 		}
 
-		return await performInstall();
+		return performInstall();
 	} else {
 		return pkgName;
 	}

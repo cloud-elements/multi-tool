@@ -9,7 +9,7 @@ const installAlwaysInvaliator = multitool('node_modules', (name, version, ago) =
 const installNeverInvaliator = multitool('node_modules', (name, version, ago) => ago >= Number.MAX_SAFE_INTEGER);
 const installInvalidPath = multitool('invalid_modules');
 
-test.before(async () => await shell('npm prune'));
+test.before(() => shell('npm prune'));
 
 test.serial('installing with an invalid path should return an empty String', async t => {
 	const installed = await installInvalidPath('ramda', '0.23.0');

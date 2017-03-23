@@ -57,9 +57,9 @@ const install = (path, invalidator) => async (name, version) => {
 	const performInstall = async () => {
 		try {
 			await rmdir(pkgPath);
-			await mkdir(pkgPath);
-			await write(pkgJsonPath, pkgJsonContents);
-			await write(pkgJsPath, pkgJsContents);
+			await mkdir(pkgPath, {mode: 0o755});
+			await write(pkgJsonPath, pkgJsonContents, {mode: 0o644});
+			await write(pkgJsPath, pkgJsContents, {mode: 0o644});
 			await shell(`cd '${pkgPath}' && npm install`);
 
 			return pkgName;

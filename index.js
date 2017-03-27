@@ -35,9 +35,9 @@ const validVersion = allPass([
 ]);
 
 const install = (path, invalidator) => async (name, version) => {
-	if (isEmpty(await stats(path))) {
+	if (!validName(name) || !validVersion(version)) {
 		return '';
-	} else if (!validName(name) || !validVersion(version)) {
+	} else if (isEmpty(await stats(path))) {
 		return '';
 	}
 

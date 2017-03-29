@@ -7,16 +7,16 @@ const {create, env} = require('sanctuary');
 const multi = require('.');
 
 const {either, fromEither} = create({checkTypes: false, env});
-
 const always = (name, version, ago) => ago >= 0;
 const never = (name, version, ago) => ago >= Number.MAX_SAFE_INTEGER;
+
 const install = multi({path: 'node_modules'});
 const installAlways = multi({path: 'node_modules', invalidate: always});
 const installNever = multi({path: 'node_modules', invalidate: never});
 
 test.before(() => shell('npm prune'));
 
-test('installing a valid package with latest version should work', async t => {
+test('installing a valid package with latest version should return Right', async t => {
 	const installation = fromEither({}, await install('ramda', 'latest'));
 	const {identity} = require('ramda@latest');
 
@@ -26,7 +26,7 @@ test('installing a valid package with latest version should work', async t => {
 	t.is(identity('hello'), 'hello');
 });
 
-test('installing a valid package with an exact version should work', async t => {
+test('installing a valid package with an exact version should return Right', async t => {
 	const installation = fromEither({}, await install('ramda', '0.23.0'));
 	const {identity} = require('ramda@0.23.0');
 
@@ -36,7 +36,7 @@ test('installing a valid package with an exact version should work', async t => 
 	t.is(identity('hello'), 'hello');
 });
 
-test('installing a valid package with an x-based range should work', async t => {
+test('installing a valid package with an x-based range should return Right', async t => {
 	const installation = fromEither({}, await install('ramda', '0.23.x'));
 	const {identity} = require('ramda@0.23.x');
 
@@ -46,7 +46,7 @@ test('installing a valid package with an x-based range should work', async t => 
 	t.is(identity('hello'), 'hello');
 });
 
-test('installing a valid package with an tilde-based range should work', async t => {
+test('installing a valid package with an tilde-based range should return Right', async t => {
 	const installation = fromEither({}, await install('ramda', '~0.23.0'));
 	const {identity} = require('ramda@~0.23.0');
 
@@ -56,7 +56,7 @@ test('installing a valid package with an tilde-based range should work', async t
 	t.is(identity('hello'), 'hello');
 });
 
-test('installing a valid package with an caret-based range should work', async t => {
+test('installing a valid package with an caret-based range should return Right', async t => {
 	const installation = fromEither({}, await install('ramda', '^0.23.0'));
 	const {identity} = require('ramda@^0.23.0');
 
@@ -66,7 +66,7 @@ test('installing a valid package with an caret-based range should work', async t
 	t.is(identity('hello'), 'hello');
 });
 
-test('installing a valid scoped package should work', async t => {
+test('installing a valid scoped package should return Right', async t => {
 	const installation = fromEither({}, await install('@rockymadden/now-go', 'latest'));
 	const req = require('@rockymadden/now-go@latest');
 
@@ -76,7 +76,7 @@ test('installing a valid scoped package should work', async t => {
 	t.truthy(req);
 });
 
-test('installing a package with an invalidator which always invalidates should work', async t => {
+test('installing a package with an invalidator which always invalidates should return Right', async t => {
 	await installAlways('ramda', '0.23.0');
 	const installation = fromEither({}, await installAlways('ramda', '0.23.0'));
 	const {identity} = require('ramda@0.23.0');
@@ -88,7 +88,7 @@ test('installing a package with an invalidator which always invalidates should w
 	t.is(identity('hello'), 'hello');
 });
 
-test('installing a package with an invalidator which never invalidates should work', async t => {
+test('installing a package with an invalidator which never invalidates should return Right', async t => {
 	await installNever('ramda', '0.22.0');
 	const installation = fromEither({}, await installNever('ramda', '0.22.0'));
 	const {identity} = require('ramda@0.22.0');

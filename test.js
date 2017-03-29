@@ -76,7 +76,7 @@ test('installing a valid scoped package should return Right', async t => {
 	t.truthy(req);
 });
 
-test('installing a package with an invalidator which always invalidates should return Right', async t => {
+test('installing a package with an always invalidator should return Right', async t => {
 	await installAlways('ramda', '0.23.0');
 	const install = fromEither({}, await installAlways('ramda', '0.23.0'));
 	const {identity} = require('ramda@0.23.0');
@@ -88,7 +88,7 @@ test('installing a package with an invalidator which always invalidates should r
 	t.is(identity('hello'), 'hello');
 });
 
-test('installing a package with an invalidator which never invalidates should return Right', async t => {
+test('installing a package with a never invalidator should return Right', async t => {
 	await installNever('ramda', '0.22.0');
 	const install = fromEither({}, await installNever('ramda', '0.22.0'));
 	const {identity} = require('ramda@0.22.0');
@@ -100,22 +100,22 @@ test('installing a package with an invalidator which never invalidates should re
 	t.is(identity('hello'), 'hello');
 });
 
-test('installing an non-existent package with an invalidator which always invalidates should return Left', async t => {
+test('installing an non-existent package with an always invalidator should return Left', async t => {
 	const install = either(identity, identity)(await installAlways('package-doesnt-exist', '0.0.0'));
 	t.true(is(Error, install));
 });
 
-test('installing an non-existent package version with an invalidator which always invalidates should return Left', async t => {
+test('installing an non-existent package version with an always invalidator should return Left', async t => {
 	const install = either(identity, identity)(await installAlways('ramda', '99.99.99'));
 	t.true(is(Error, install));
 });
 
-test('installing an non-existent package with an invalidator which never invalidates should return Left', async t => {
+test('installing an non-existent package with a never invalidator should return Left', async t => {
 	const install = either(identity, identity)(await installNever('package-doesnt-exist', '0.0.0'));
 	t.true(is(Error, install));
 });
 
-test('installing an non-existent package version with an invalidator which never invalidates should return Left', async t => {
+test('installing an non-existent package version with a never invalidator should return Left', async t => {
 	const install = either(identity, identity)(await installNever('ramda', '99.99.99'));
 	t.true(is(Error, install));
 });

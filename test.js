@@ -120,20 +120,29 @@ test('installing an non-existent package version with a never invalidator should
 	t.true(isLeft(install));
 });
 
-test('installing a valid package numerous times concurrently should work', async t => {
+test('installing a valid package numerous times concurrently less than timeout should return Right', async t => {
 	const toInstall = [
-		installAlways('ramda', '0.21.0'),
-		installAlways('ramda', '0.21.0'),
-		installAlways('ramda', '0.21.0'),
 		installAlways('ramda', '0.21.0'),
 		installAlways('ramda', '0.21.0')
 	];
 	const installs = map(either(identity, identity), await Promise.all(toInstall));
-	const delay0 = filter(i => i.delayed === 0, installs)[0];
-	const delayGreaterThan0 = filter(i => i.delayed > 0, installs)[0];
-	const delayMaximum = filter(i => i === 'Non-performant install', installs)[0];
+	const delayed0 = filter(i => i.delayed === 0, installs)[0];
+	const delayedGreaterThan0 = filter(i => i.delayed > 0, installs)[0];
 
-	t.true(delay0.installed);
-	t.true(delayGreaterThan0.installed);
-	t.truthy(delayMaximum);
+	t.true(delayed0.installed);
+	t.true(delayedGreaterThan0.installed);
+});
+
+test('installing a valid package numerous times concurrently greater than timeout should return Right', async t => {
+	const toInstall = [
+		installAlways('ramda', '0.20.0'),
+		installAlways('ramda', '0.20.0'),
+		installAlways('ramda', '0.20.0'),
+		installAlways('ramda', '0.20.0'),
+		installAlways('ramda', '0.20.0')
+	];
+	const installs = map(either(identity, identity), await Promise.all(toInstall));
+	const delayedMaximum = filter(i => i === 'Non-performant install', installs)[0];
+
+	t.truthy(delayedMaximum);
 });

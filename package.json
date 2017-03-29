@@ -5,7 +5,6 @@
     "execa": "0.6.x",
     "fs-extra": "2.x",
     "graceful-fs": "4.x",
-    "package-json": "4.x",
     "pify": "2.x",
     "ramda": "0.23.x",
     "sanctuary": "0.12.x"

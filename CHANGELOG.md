@@ -1,4 +1,8 @@
-## v0.3.2 <sub><sup>(2017-03-2)</sup></sub>
+## v0.4.0 <sub><sup>(2017-03-29)</sup></sub>
+* Fix concurrency issues
+* Return [Sanctuary](https://github.com/sanctuary-js/sanctuary) `Either`
+
+## v0.3.2 <sub><sup>(2017-03-22)</sup></sub>
 * Fix mode upon directory and file creation
 
 ## v0.3.1 <sub><sup>(2017-03-06)</sup></sub>

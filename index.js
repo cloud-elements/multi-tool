@@ -49,16 +49,13 @@ const installer = ({delay, invalidate, path, timeout}) => async (name, version) 
 			await writeFile(jsPath, jsContents, {mode: 0o644});
 			await shell('npm', ['install'], {cwd: prefixInstalling});
 
-			ifElse(
-				isEmpty,
-				() => rename(prefixInstalling, prefixInstalled),
-				() => {
-					rename(prefixInstalled, prefixUninstalling);
-					rename(prefixInstalling, prefixInstalled);
-				}
-			)(installed);
-
-			await remove(prefixUninstalling);
+			if (isEmpty(installed)) {
+				rename(prefixInstalling, prefixInstalled);
+			} else {
+				rename(prefixInstalled, prefixUninstalling);
+				rename(prefixInstalling, prefixInstalled);
+				await remove(prefixUninstalling);
+			}
 
 			return Right({delayed, installed: true, name, uninstalled: uninstall, version});
 		} catch (err) /* istanbul ignore next */ {

@@ -11,28 +11,34 @@ const {T, always, ifElse, isEmpty, tryCatch} = require('ramda');
 const {create, env} = require('sanctuary');
 
 const {Left, Right} = create({checkTypes: false, env});
-const mkdirp = fse.mkdirsSync;
+const mkdirp = pify(fse.mkdirs);
 const rename = fs.renameSync;
-const remove = fse.removeSync;
 const writeFile = pify(fs.writeFile);
 
-const stat = tryCatch(fs.statSync, always({}));
 const exists = tryCatch(fs.existsSync, always({}));
+const remove = async path => {
+	try {
+		await pify(fse.remove)(path);
+	} catch (err) {}
+};
+const stat = tryCatch(fs.statSync, always({}));
+const touch = fse.mkdirsSync;
 
 const installer = ({delay, invalidate, path, timeout}) => async (name, version) => {
 	const prefixInstalled = resolve(path, `${name}@${version}`);
 	const prefixInstalling = resolve(path, `${name}@${version}.install`);
 	const prefixUninstalling = resolve(path, `${name}@${version}.uninstall`);
+	const prefixLock = resolve(path, `${name}@${version}.lock`);
 
 	const attempt = async delayed => {
 		if (delayed >= timeout) {
 			return Left('Non-performant install');
 		}
 
-		const installing = exists(prefixInstalling);
+		const locked = exists(prefixLock);
 		const stats = stat(prefixInstalled);
 
-		const stub = () => mkdirp(prefixInstalling, {mode: 0o755});
+		const lock = () => touch(prefixLock, {mode: 0o755});
 		const install = async () => {
 			const jsonPath = resolve(prefixInstalling, 'package.json');
 			const jsonContents = JSON.stringify({
@@ -44,16 +50,18 @@ const installer = ({delay, invalidate, path, timeout}) => async (name, version) 
 			const jsPath = resolve(prefixInstalling, 'index.js');
 			const jsContents = `module.exports = require('${name}');`;
 
+			await mkdirp(prefixInstalling, {mode: 0o755});
 			await writeFile(jsonPath, jsonContents, {mode: 0o644});
 			await writeFile(jsPath, jsContents, {mode: 0o644});
 			await shell('npm', ['install'], {cwd: prefixInstalling});
 		};
 		const swapUninstalling = () => rename(prefixInstalled, prefixUninstalling);
 		const swapInstalling = () => rename(prefixInstalling, prefixInstalled);
-		const cleanUninstalling = () => tryCatch(remove, always(null))(prefixUninstalling);
-		const cleanInstalling = () => tryCatch(remove, always(null))(prefixInstalling);
+		const cleanUninstalling = () => remove(prefixUninstalling);
+		const cleanInstalling = () => remove(prefixInstalling);
+		const unlock = () => remove(prefixLock);
 
-		if (!installing) {
+		if (!locked) {
 			const age = ifElse(isEmpty, always(Number.MAX_SAFE_INTEGER), u => diff(new Date(), u.ctime))(stats);
 			const installed = age !== Number.MAX_SAFE_INTEGER;
 
@@ -62,21 +70,24 @@ const installer = ({delay, invalidate, path, timeout}) => async (name, version) 
 			}
 
 			try {
-				stub();
+				lock();
 				await install();
 
 				if (installed) {
 					swapUninstalling();
 					swapInstalling();
-					cleanUninstalling();
+					await cleanUninstalling();
 				} else {
 					swapInstalling();
 				}
 
+				await unlock();
+
 				return Right({delayed, installed: true, name, uninstalled: installed, version});
 			} catch (err) {
-				cleanUninstalling();
-				cleanInstalling();
+				await cleanUninstalling();
+				await cleanInstalling();
+				await unlock();
 
 				return Left(err.message);
 			}

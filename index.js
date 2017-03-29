@@ -1,95 +1,101 @@
 'use strict';
 
-const pth = require('path');
+const {resolve} = require('path');
 const diff = require('date-fns/difference_in_milliseconds');
-const execa = require('execa');
-const {mkdirp, outputFile, remove} = require('fs-extra');
-const {stat} = require('graceful-fs');
-const exists = require('package-json');
+const sleep = require('es7-sleep');
+const shell = require('execa');
+const fse = require('fs-extra');
+const fs = require('graceful-fs');
+const registry = require('package-json');
 const pify = require('pify');
-const {allPass, always, F, identity, is, isEmpty, T} = require('ramda');
-const semver = require('semver');
-const validNpm = require('validate-npm-package-name');
-const validFilename = require('valid-filename');
+const {F, T, always, cond, equals, identity, ifElse, isEmpty} = require('ramda');
+const {create, env} = require('sanctuary');
 
-const mkdir = pify(mkdirp);
-const rmdir = pify(remove);
-const shell = execa.shell;
-const stats = path => pify(stat)(path).then(identity).catch(always({}));
-const write = pify(outputFile);
+const {Left, Right} = create({checkTypes: false, env});
+const mkdirp = pify(fse.mkdirp);
+const rename = fs.renameSync;
+const remove = pify(fse.remove);
+const stat = pify(fs.stat);
+const writeFile = pify(fs.writeFile);
 
-const validExists = (name, version) => exists(name, version).then(T).catch(F);
+const exists = (name, version) => registry(name, version).then(T).catch(F);
+const stats = p => stat(p).then(identity).catch(always({}));
 
-const validName = allPass([
-	is(String),
-	name => {
-		const check = validNpm(name);
-		return check.validForNewPackages || check.validForOldPackages;
-	}
-]);
+const installer = ({delay, invalidate, path, timeout}) => async (name, version) => {
+	const prefixInstalled = resolve(path, `${name}@${version}`);
+	const prefixInstalling = resolve(path, `${name}@${version}.install`);
+	const prefixUninstalling = resolve(path, `${name}@${version}.uninstall`);
+	const installing = await stats(prefixInstalling);
+	const installed = await stats(prefixInstalled);
 
-const validVersion = allPass([
-	is(String),
-	validFilename,
-	ver => ver === 'latest' || semver.validRange(ver)
-]);
+	const install = async (uninstall, delayed) => {
+		if (!(await exists(name, version))) {
+			return Left(new Error('Non-existent NPM package'));
+		}
 
-const install = (path, invalidator) => async (name, version) => {
-	if (!validName(name) || !validVersion(version)) {
-		return '';
-	} else if (isEmpty(await stats(path))) {
-		return '';
-	}
+		const jsonPath = resolve(prefixInstalling, 'package.json');
+		const jsonContents = JSON.stringify({
+			name: `${name}-${version}`,
+			version: '0.0.0',
+			main: 'index.js',
+			dependencies: {[name]: version}
+		});
+		const jsPath = resolve(prefixInstalling, 'index.js');
+		const jsContents = `module.exports = require('${name}');`;
 
-	const pkgName = `${name}@${version}`;
-	const pkgPath = pth.join(path, pkgName);
-	const pkgPathStats = await stats(pkgPath);
-	const pkgJsonPath = pth.join(pkgPath, 'package.json');
-	const pkgJsonContents = JSON.stringify({
-		name: `${name}-${version}`,
-		version: '0.0.0',
-		main: 'index.js',
-		dependencies: {[name]: version}
-	});
-	const pkgJsPath = pth.join(pkgPath, 'index.js');
-	const pkgJsContents = `module.exports = require('${name}');`;
-
-	const performInstall = async () => {
 		try {
-			await rmdir(pkgPath);
-			await mkdir(pkgPath, {mode: 0o755});
-			await write(pkgJsonPath, pkgJsonContents, {mode: 0o644});
-			await write(pkgJsPath, pkgJsContents, {mode: 0o644});
-			await shell(`cd '${pkgPath}' && npm install`);
+			await mkdirp(prefixInstalling, {mode: 0o755});
+			await writeFile(jsonPath, jsonContents, {mode: 0o644});
+			await writeFile(jsPath, jsContents, {mode: 0o644});
+			await shell('npm', ['install'], {cwd: prefixInstalling});
 
-			return pkgName;
+			ifElse(
+				isEmpty,
+				() => rename(prefixInstalling, prefixInstalled),
+				() => {
+					rename(prefixInstalled, prefixUninstalling);
+					rename(prefixInstalling, prefixInstalled);
+				}
+			)(installed);
+
+			await remove(prefixUninstalling);
+
+			return Right({delayed, installed: true, name, uninstalled: uninstall, version});
 		} catch (err) /* istanbul ignore next */ {
 			try {
-				await rmdir(pkgPath);
-			} catch (err) { }
+				await remove(prefixUninstalling);
+			} catch (err) {}
+			try {
+				await remove(prefixInstalling);
+			} catch (err) {}
 
-			return '';
+			return Left(err);
 		}
 	};
 
-	const ago = isEmpty(pkgPathStats) ? Number.MAX_SAFE_INTEGER : diff(new Date(), pkgPathStats.ctime);
+	const attempt = async delayed => {
+		if (delayed >= timeout) {
+			return Left(new Error('Non-performant install'));
+		} else if (isEmpty(installing)) {
+			const age = ifElse(
+				isEmpty,
+				always(Number.MAX_SAFE_INTEGER),
+				u => diff(new Date(), u.ctime)
+			)(installed);
 
-	if (ago === Number.MAX_SAFE_INTEGER || invalidator(name, version, ago)) {
-		if (!(await validExists(name, version))) {
-			return '';
+			return cond([
+				[equals(Number.MAX_SAFE_INTEGER), () => install(false, delayed)],
+				[age => invalidate(name, version, age), () => install(true, delayed)],
+				[T, always(Right({delayed: 0, installed: false, name, uninstalled: false, version}))]
+			])(age);
+		} else {
+			await sleep(delay);
+			return attempt(delayed + delay);
 		}
+	};
 
-		return performInstall();
-	} else {
-		return pkgName;
-	}
+	return attempt(0);
 };
 
-module.exports = (path, invalidator = T) => {
-	const exp = install(path, invalidator);
-	exp.validExists = validExists;
-	exp.validName = validName;
-	exp.validVersion = validVersion;
-
-	return exp;
-};
+module.exports = ({delay = 5000, invalidate = T, path, timeout = 60000}) =>
+	installer({delay, invalidate, path, timeout});

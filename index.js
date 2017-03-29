@@ -6,85 +6,80 @@ const sleep = require('es7-sleep');
 const shell = require('execa');
 const fse = require('fs-extra');
 const fs = require('graceful-fs');
-const registry = require('package-json');
 const pify = require('pify');
-const {F, T, always, cond, equals, identity, ifElse, isEmpty} = require('ramda');
+const {T, always, ifElse, isEmpty, tryCatch} = require('ramda');
 const {create, env} = require('sanctuary');
 
 const {Left, Right} = create({checkTypes: false, env});
-const mkdirp = pify(fse.mkdirp);
+const mkdirp = fse.mkdirsSync;
 const rename = fs.renameSync;
-const remove = pify(fse.remove);
-const stat = pify(fs.stat);
+const remove = fse.removeSync;
 const writeFile = pify(fs.writeFile);
 
-const exists = (name, version) => registry(name, version).then(T).catch(F);
-const stats = p => stat(p).then(identity).catch(always({}));
+const stat = tryCatch(fs.statSync, always({}));
+const exists = tryCatch(fs.existsSync, always({}));
 
 const installer = ({delay, invalidate, path, timeout}) => async (name, version) => {
 	const prefixInstalled = resolve(path, `${name}@${version}`);
 	const prefixInstalling = resolve(path, `${name}@${version}.install`);
 	const prefixUninstalling = resolve(path, `${name}@${version}.uninstall`);
-	const installing = await stats(prefixInstalling);
-	const installed = await stats(prefixInstalled);
-
-	const install = async (uninstall, delayed) => {
-		if (!(await exists(name, version))) {
-			return Left(new Error('Non-existent NPM package'));
-		}
-
-		const jsonPath = resolve(prefixInstalling, 'package.json');
-		const jsonContents = JSON.stringify({
-			name: `${name}-${version}`,
-			version: '0.0.0',
-			main: 'index.js',
-			dependencies: {[name]: version}
-		});
-		const jsPath = resolve(prefixInstalling, 'index.js');
-		const jsContents = `module.exports = require('${name}');`;
-
-		try {
-			await mkdirp(prefixInstalling, {mode: 0o755});
-			await writeFile(jsonPath, jsonContents, {mode: 0o644});
-			await writeFile(jsPath, jsContents, {mode: 0o644});
-			await shell('npm', ['install'], {cwd: prefixInstalling});
-
-			if (isEmpty(installed)) {
-				rename(prefixInstalling, prefixInstalled);
-			} else {
-				rename(prefixInstalled, prefixUninstalling);
-				rename(prefixInstalling, prefixInstalled);
-				await remove(prefixUninstalling);
-			}
-
-			return Right({delayed, installed: true, name, uninstalled: uninstall, version});
-		} catch (err) /* istanbul ignore next */ {
-			try {
-				await remove(prefixUninstalling);
-			} catch (err) {}
-			try {
-				await remove(prefixInstalling);
-			} catch (err) {}
-
-			return Left(err);
-		}
-	};
 
 	const attempt = async delayed => {
 		if (delayed >= timeout) {
-			return Left(new Error('Non-performant install'));
-		} else if (isEmpty(installing)) {
-			const age = ifElse(
-				isEmpty,
-				always(Number.MAX_SAFE_INTEGER),
-				u => diff(new Date(), u.ctime)
-			)(installed);
+			return Left('Non-performant install');
+		}
 
-			return cond([
-				[equals(Number.MAX_SAFE_INTEGER), () => install(false, delayed)],
-				[age => invalidate(name, version, age), () => install(true, delayed)],
-				[T, always(Right({delayed: 0, installed: false, name, uninstalled: false, version}))]
-			])(age);
+		const installing = exists(prefixInstalling);
+		const stats = stat(prefixInstalled);
+
+		const stub = () => mkdirp(prefixInstalling, {mode: 0o755});
+		const install = async () => {
+			const jsonPath = resolve(prefixInstalling, 'package.json');
+			const jsonContents = JSON.stringify({
+				name: `${name}-${version}`,
+				version: '0.0.0',
+				main: 'index.js',
+				dependencies: {[name]: version}
+			});
+			const jsPath = resolve(prefixInstalling, 'index.js');
+			const jsContents = `module.exports = require('${name}');`;
+
+			await writeFile(jsonPath, jsonContents, {mode: 0o644});
+			await writeFile(jsPath, jsContents, {mode: 0o644});
+			await shell('npm', ['install'], {cwd: prefixInstalling});
+		};
+		const swapUninstalling = () => rename(prefixInstalled, prefixUninstalling);
+		const swapInstalling = () => rename(prefixInstalling, prefixInstalled);
+		const cleanUninstalling = () => tryCatch(remove, always(null))(prefixUninstalling);
+		const cleanInstalling = () => tryCatch(remove, always(null))(prefixInstalling);
+
+		if (!installing) {
+			const age = ifElse(isEmpty, always(Number.MAX_SAFE_INTEGER), u => diff(new Date(), u.ctime))(stats);
+			const installed = age !== Number.MAX_SAFE_INTEGER;
+
+			if (installed && !invalidate(name, version, age)) {
+				return Right({delayed: 0, installed: false, name, uninstalled: false, version});
+			}
+
+			try {
+				stub();
+				await install();
+
+				if (installed) {
+					swapUninstalling();
+					swapInstalling();
+					cleanUninstalling();
+				} else {
+					swapInstalling();
+				}
+
+				return Right({delayed, installed: true, name, uninstalled: installed, version});
+			} catch (err) {
+				cleanUninstalling();
+				cleanInstalling();
+
+				return Left(err.message);
+			}
 		} else {
 			await sleep(delay);
 			return attempt(delayed + delay);

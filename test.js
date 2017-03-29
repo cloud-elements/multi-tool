@@ -2,17 +2,17 @@
 
 const test = require('ava');
 const {shell} = require('execa');
-const {identity, is} = require('ramda');
+const {filter, identity, map} = require('ramda');
 const {create, env} = require('sanctuary');
 const multi = require('.');
 
-const {either, fromEither} = create({checkTypes: false, env});
+const {either, fromEither, isLeft} = create({checkTypes: false, env});
 const always = (name, version, ago) => ago >= 0;
 const never = (name, version, ago) => ago >= Number.MAX_SAFE_INTEGER;
 
 const installDefault = multi({path: 'node_modules'});
-const installAlways = multi({path: 'node_modules', invalidate: always});
-const installNever = multi({path: 'node_modules', invalidate: never});
+const installAlways = multi({delay: 2500, path: 'node_modules', invalidate: always, timeout: 10000});
+const installNever = multi({delay: 2500, path: 'node_modules', invalidate: never, timeout: 10000});
 
 test.before(() => shell('npm prune'));
 
@@ -101,21 +101,39 @@ test('installing a package with a never invalidator should return Right', async 
 });
 
 test('installing an non-existent package with an always invalidator should return Left', async t => {
-	const install = either(identity, identity)(await installAlways('package-doesnt-exist', '0.0.0'));
-	t.true(is(Error, install));
+	const install = await installAlways('package-doesnt-exist', '0.0.0');
+	t.true(isLeft(install));
 });
 
 test('installing an non-existent package version with an always invalidator should return Left', async t => {
-	const install = either(identity, identity)(await installAlways('ramda', '99.99.99'));
-	t.true(is(Error, install));
+	const install = await installAlways('ramda', '99.99.99');
+	t.true(isLeft(install));
 });
 
 test('installing an non-existent package with a never invalidator should return Left', async t => {
-	const install = either(identity, identity)(await installNever('package-doesnt-exist', '0.0.0'));
-	t.true(is(Error, install));
+	const install = await installNever('package-doesnt-exist', '0.0.0');
+	t.true(isLeft(install));
 });
 
 test('installing an non-existent package version with a never invalidator should return Left', async t => {
-	const install = either(identity, identity)(await installNever('ramda', '99.99.99'));
-	t.true(is(Error, install));
+	const install = await installNever('ramda', '99.99.99');
+	t.true(isLeft(install));
+});
+
+test('installing a valid package numerous times concurrently should work', async t => {
+	const toInstall = [
+		installAlways('ramda', '0.21.0'),
+		installAlways('ramda', '0.21.0'),
+		installAlways('ramda', '0.21.0'),
+		installAlways('ramda', '0.21.0'),
+		installAlways('ramda', '0.21.0')
+	];
+	const installs = map(either(identity, identity), await Promise.all(toInstall));
+	const delay0 = filter(i => i.delayed === 0, installs)[0];
+	const delayGreaterThan0 = filter(i => i.delayed > 0, installs)[0];
+	const delayMaximum = filter(i => i === 'Non-performant install', installs)[0];
+
+	t.true(delay0.installed);
+	t.true(delayGreaterThan0.installed);
+	t.truthy(delayMaximum);
 });

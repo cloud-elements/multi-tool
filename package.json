@@ -1,15 +1,13 @@
 {
   "dependencies": {
     "date-fns": "1.28.x",
+    "es7-sleep": "1.x",
     "execa": "0.6.x",
     "fs-extra": "2.x",
     "graceful-fs": "4.x",
-    "package-json": "3.x",
     "pify": "2.x",
     "ramda": "0.23.x",
-    "semver": "5.x",
-    "validate-npm-package-name": "3.x",
-    "valid-filename": "2.x"
+    "sanctuary": "0.12.x"
   },
   "description": "Install and require multiple versions of NPM packages",
   "devDependencies": {
@@ -61,7 +59,7 @@
       "import/no-extraneous-dependencies": 0,
       "import/no-unresolved": 0,
       "new-cap": 0,
-      "no-else-return": 0
+      "no-negated-condition": 0
     }
   }
 }

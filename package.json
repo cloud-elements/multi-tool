@@ -59,7 +59,6 @@
       "import/no-extraneous-dependencies": 0,
       "import/no-unresolved": 0,
       "new-cap": 0,
-      "no-else-return": 0,
       "no-negated-condition": 0
     }
   }

@@ -50,8 +50,8 @@ const attempt = async ({delay, invalidate, path, timeout}, name, version, delaye
 	}
 
 	const date = new Date();
-	const lockingPath = resolve(path, `${name}@${version}.lock`);
-	const lockedStat = stat(lockingPath);
+	const lockedPath = resolve(path, `${name}@${version}.lock`);
+	const lockedStat = stat(lockedPath);
 	const lockedAge = isEmpty(lockedStat) ? Number.MAX_SAFE_INTEGER : diff(date, lockedStat.ctime);
 	const locked = lockedAge <= timeout;
 
@@ -68,7 +68,7 @@ const attempt = async ({delay, invalidate, path, timeout}, name, version, delaye
 		}
 
 		try {
-			lock(lockingPath);
+			lock(lockedPath);
 			await clean(installingPath); // Handles for potential bad state
 			await clean(uninstallingPath); // Handles for potential bad state
 			await install(installingPath, name, version);
@@ -81,13 +81,13 @@ const attempt = async ({delay, invalidate, path, timeout}, name, version, delaye
 				swap(installingPath, installedPath);
 			}
 
-			await clean(lockingPath);
+			await clean(lockedPath);
 
 			return Right({delayed, installed: true, name, uninstalled: installed, version});
 		} catch (err) {
 			await clean(uninstallingPath);
 			await clean(installingPath);
-			await clean(lockingPath);
+			await clean(lockedPath);
 
 			return Left(err.message);
 		}

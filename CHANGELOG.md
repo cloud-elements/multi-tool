@@ -1,3 +1,6 @@
+## v0.4.1 <sub><sup>(2017-04-04)</sup></sub>
+* Fix memory leak
+
 ## v0.4.0 <sub><sup>(2017-03-29)</sup></sub>
 * Fix concurrency issues
 * Return [Sanctuary](https://github.com/sanctuary-js/sanctuary) `Either`

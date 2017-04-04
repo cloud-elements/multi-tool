@@ -38,6 +38,7 @@ const install = async (path, name, version) => {
 	await mkdirp(path, {mode: 0o755});
 	await writeFile(jsonPath, jsonContents, {mode: 0o644});
 	await writeFile(jsPath, jsContents, {mode: 0o644});
+	await shell('npm', ['cache', 'clean', `${name}@${version}`], {cwd: path});
 	await shell('npm', ['install'], {cwd: path});
 };
 const swap = (from, to) => rename(from, to);

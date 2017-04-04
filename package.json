@@ -52,7 +52,7 @@
     "test": "{ npm run depend || true; } && npm run lint && npm run unit",
     "unit": "nyc --check-coverage ava"
   },
-  "version": "0.4.0",
+  "version": "0.4.1",
   "xo": {
     "esnext": true,
     "rules": {

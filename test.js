@@ -1,7 +1,6 @@
 'use strict';
 
 const test = require('ava');
-const {shell} = require('execa');
 const {filter, identity, map} = require('ramda');
 const {create, env} = require('sanctuary');
 const multi = require('.');
@@ -13,8 +12,6 @@ const never = (name, version, ago) => ago >= Number.MAX_SAFE_INTEGER;
 const installDefault = multi({path: 'node_modules'});
 const installAlways = multi({delay: 10000, path: 'node_modules', invalidate: always, timeout: 25000});
 const installNever = multi({delay: 10000, path: 'node_modules', invalidate: never, timeout: 25000});
-
-test.before(() => shell('npm prune'));
 
 test('installing a valid package with latest version should return Right', async t => {
 	const install = fromEither({}, await installDefault('ramda', 'latest'));

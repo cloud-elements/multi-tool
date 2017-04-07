@@ -21,9 +21,9 @@ const remove = async path => {
 	} catch (err) {}
 };
 const stat = tryCatch(fs.statSync, always({}));
-const touch = fse.mkdirsSync;
+const touch = path => fs.closeSync(fs.openSync(path, 'w'));
 
-const lock = path => touch(path, {mode: 0o755});
+const lock = path => touch(path);
 const install = async (path, name, version) => {
 	const jsonPath = resolve(path, 'package.json');
 	const jsonContents = JSON.stringify({
@@ -43,6 +43,7 @@ const install = async (path, name, version) => {
 };
 const swap = (from, to) => rename(from, to);
 const clean = path => remove(path);
+const unlock = clean;
 
 const attempt = async ({delay, invalidate, path, timeout}, name, version, delayed) => {
 	if (delayed >= timeout) {
@@ -50,9 +51,9 @@ const attempt = async ({delay, invalidate, path, timeout}, name, version, delaye
 	}
 
 	const date = new Date();
-	const lockedPath = resolve(path, `${name}@${version}.lock`);
+	const lockedPath = resolve(path, `${name.replace('/', '_')}@${version}.lock`);
 	const lockedStat = stat(lockedPath);
-	const lockedAge = isEmpty(lockedStat) ? Number.MAX_SAFE_INTEGER : diff(date, lockedStat.ctime);
+	const lockedAge = isEmpty(lockedStat) ? Number.MAX_SAFE_INTEGER : diff(date, lockedStat.mtime);
 	const locked = lockedAge <= timeout;
 
 	if (!locked) {
@@ -60,7 +61,7 @@ const attempt = async ({delay, invalidate, path, timeout}, name, version, delaye
 		const installingPath = resolve(path, `${name}@${version}.install`);
 		const uninstallingPath = resolve(path, `${name}@${version}.uninstall`);
 		const installedStat = stat(installedPath);
-		const installedAge = isEmpty(installedStat) ? Number.MAX_SAFE_INTEGER : diff(date, installedStat.ctime);
+		const installedAge = isEmpty(installedStat) ? Number.MAX_SAFE_INTEGER : diff(date, installedStat.mtime);
 		const installed = installedAge !== Number.MAX_SAFE_INTEGER;
 
 		if (installed && !invalidate(name, version, installedAge)) {
@@ -81,13 +82,13 @@ const attempt = async ({delay, invalidate, path, timeout}, name, version, delaye
 				swap(installingPath, installedPath);
 			}
 
-			await clean(lockedPath);
+			await unlock(lockedPath);
 
 			return Right({delayed, installed: true, name, uninstalled: installed, version});
 		} catch (err) {
 			await clean(uninstallingPath);
 			await clean(installingPath);
-			await clean(lockedPath);
+			await unlock(lockedPath);
 
 			return Left(err.message);
 		}

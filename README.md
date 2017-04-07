@@ -82,20 +82,20 @@ installed package and reinstall. The default invalidator behavior is to always i
 
 #### Invalidate always:
 ```javascript
-const invalidator = (name, version, age) => age >= 0;
-const install = require('multi-tool')({path: 'node_modules', invalidate: invalidator});
+const invalidate = (name, version, age) => age >= 0;
+const install = require('multi-tool')({path: 'node_modules', invalidate});
 ```
 
 #### Invalidate never:
 ```javascript
-const invalidator = (name, version, age) => age >= Number.MAX_SAFE_INTEGER;
-const install = require('multi-tool')({path: 'node_modules', invalidate: invalidator});
+const invalidate = (name, version, age) => age >= Number.MAX_SAFE_INTEGER;
+const install = require('multi-tool')({path: 'node_modules', invalidate});
 ```
 
 #### Invalidate only latest versions and only after 10 minutes:
 ```javascript
-const invalidator = (name, version, age) => version === 'latest' && age >= 600000;
-const install = require('multi-tool')({path: 'node_modules', invalidate: invalidator});
+const invalidate = (name, version, age) => version === 'latest' && age >= 600000;
+const install = require('multi-tool')({path: 'node_modules', invalidate});
 ```
 
 ## Maintainers

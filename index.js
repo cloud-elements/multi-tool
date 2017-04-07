@@ -70,8 +70,9 @@ const attempt = async ({delay, invalidate, path, timeout}, name, version, delaye
 
 		try {
 			lock(lockedPath);
-			await clean(installingPath); // Handles for potential bad state
-			await clean(uninstallingPath); // Handles for potential bad state
+			// The two clean statements handle for potential bad state if a node process somehow crashes mid-install.
+			await clean(installingPath);
+			await clean(uninstallingPath);
 			await install(installingPath, name, version);
 
 			if (installed) {

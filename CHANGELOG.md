@@ -1,3 +1,6 @@
+## v0.4.2 <sub><sup>(2017-04-07)</sup></sub>
+* Update locks to use files with updated mtime
+
 ## v0.4.1 <sub><sup>(2017-04-04)</sup></sub>
 * Fix memory leak
 

@@ -1,4 +1,4 @@
-# multi-tool <sub><sup>| Install and require multiple versions of NPM packages<sup></sub>
+# multi-tool <sub><sup>| Install and require multiple NPM package versions<sup></sub>
 [![version](http://img.shields.io/badge/version-0.4.2-blue.svg)](https://www.npmjs.com/package/multi-tool)
 [![versioning](http://img.shields.io/badge/versioning-semver-blue.svg)](http://semver.org/)
 [![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/)
@@ -7,7 +7,7 @@
 [![build](https://circleci.com/gh/cloud-elements/multi-tool.svg?style=shield)](https://circleci.com/gh/cloud-elements/multi-tool)
 
 Install multiple versions of NPM packages at runtime. Use any semver ranges which are also a valid (Li|U)nix directory
-names as your versions and `require` them intuitively (e.g. `require('ramda@0.23.x')`, `require('ramda@~0.22.1')`,
+names as your version and `require` them intuitively (e.g. `require('ramda@0.23.x')`, `require('ramda@~0.22.1')`,
 `require('ramda@latest')`). Leverage custom invalidators to automatically keep installed packages up-to-date.
 
 ## Install

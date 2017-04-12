@@ -7,7 +7,7 @@ const shell = require('execa');
 const fse = require('fs-extra');
 const fs = require('graceful-fs');
 const pify = require('pify');
-const {T, always, defaultTo, is, isEmpty, tryCatch} = require('ramda');
+const {T, always, isEmpty, tryCatch} = require('ramda');
 const {create, env} = require('sanctuary');
 
 const {Left, Right} = create({checkTypes: false, env});

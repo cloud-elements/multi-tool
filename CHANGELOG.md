@@ -1,3 +1,7 @@
+## v0.5.0 <sub><sup>(2017-04-12)</sup></sub>
+* Updated left-sided return to be `Either(Error)` instead of `Either(String)`
+* Move from `npm` to `yarn`
+
 ## v0.4.2 <sub><sup>(2017-04-07)</sup></sub>
 * Update locks to use files with updated mtime
 

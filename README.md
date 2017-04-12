@@ -18,9 +18,19 @@ $ yarn add multi-tool
 ```
 
 ## Usage
-An options object is required to configure before using. However, only `path` is required:
+### Require:
+An options object is required to configure before using, only `path` is required.
 ```javascript
-const options = {delay: 2500, path: 'node_modules', invalidate: () => true, timeout: 60000};
+const options = {
+	// Milliseconds to delay when an install is already occurring before reattempting
+	delay: 2500,
+	// Path to install modules
+	path: 'node_modules',
+	// Function use to determine if package, if already installed, should be reinstalled
+	invalidate: (name, version, age) => age >= Number.MAX_SAFE_INTEGER,
+	// Milliseconds maximum to delay before an install is considered failed if an install is already occurring
+	timeout: 60000
+};
 const install = require('multi-tool')(options);
 ```
 

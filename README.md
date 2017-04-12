@@ -22,12 +22,12 @@ $ yarn add multi-tool
 An options object is required to configure before using, only `path` is required.
 ```javascript
 const options = {
+  // Path to install against
+  path: 'node_modules',
+  // Function used to determine if package should be invalidated and reinstalled when already installed
+  invalidate: (name, version, age) => age >= Number.MAX_SAFE_INTEGER,
   // Milliseconds to delay when an install is already occurring before reattempting
   delay: 2500,
-  // Path to install modules
-  path: 'node_modules',
-  // Function use to determine if package, if already installed, should be reinstalled
-  invalidate: (name, version, age) => age >= Number.MAX_SAFE_INTEGER,
   // Milliseconds maximum to delay before an install is considered failed if an install is already occurring
   timeout: 60000
 };

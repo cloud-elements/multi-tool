@@ -49,7 +49,7 @@
   "scripts": {
     "cover": "nyc report --reporter=text-lcov",
     "coverage": "nyc report --reporter=lcov && open ./coverage/lcov-report/index.html",
-    "depend": "npm-check --ignore ramda* --ignore @rockymadden/now-go*",
+    "depend": "npm-check",
     "lint": "xo",
     "test": "{ npm run depend || true; } && npm run lint && npm run unit",
     "unit": "nyc --check-coverage ava"

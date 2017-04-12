@@ -7,7 +7,7 @@ const shell = require('execa');
 const fse = require('fs-extra');
 const fs = require('graceful-fs');
 const pify = require('pify');
-const {T, always, isEmpty, tryCatch} = require('ramda');
+const {T, always, defaultTo, is, isEmpty, tryCatch} = require('ramda');
 const {create, env} = require('sanctuary');
 
 const {Left, Right} = create({checkTypes: false, env});
@@ -46,8 +46,8 @@ const clean = path => remove(path);
 const unlock = clean;
 
 const attempt = async ({delay, invalidate, path, timeout}, name, version, delayed) => {
-	if (delayed >= timeout) {
-		return Left('Non-performant install');
+	if (delayed > timeout) {
+		return Left(new Error('Delayed exceeds timeout'));
 	}
 
 	const date = new Date();
@@ -91,7 +91,7 @@ const attempt = async ({delay, invalidate, path, timeout}, name, version, delaye
 			await clean(installingPath);
 			await unlock(lockedPath);
 
-			return Left(err.message);
+			return Left(err);
 		}
 	} else {
 		await sleep(delay);

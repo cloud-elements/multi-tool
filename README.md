@@ -13,6 +13,8 @@ names as your versions and `require` them intuitively (e.g. `require('ramda@0.23
 ## Install
 ```bash
 $ npm install --save multi-tool
+$ # OR
+$ yarn add multi-tool
 ```
 
 ## Usage

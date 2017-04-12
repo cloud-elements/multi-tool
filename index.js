@@ -21,7 +21,7 @@ const remove = async path => {
 	} catch (err) {}
 };
 const stat = tryCatch(fs.statSync, always({}));
-const touch = path => fs.closeSync(fs.openSync(path, 'w'));
+const touch = path => fs.closeSync(fs.openSync(path, 'w', 0o644));
 
 const lock = path => touch(path);
 const install = async (path, name, version) => {

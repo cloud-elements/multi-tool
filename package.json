@@ -9,7 +9,7 @@
     "ramda": "0.23.0",
     "sanctuary": "0.12.2"
   },
-  "description": "Install and require multiple NPM package versions",
+  "description": "Install and require multiple simultaneous versions of any NPM package",
   "devDependencies": {
     "ava": "0.19.1",
     "npm-check": "5.4.0",
@@ -29,6 +29,7 @@
     "packages",
     "require",
     "semver",
+    "simultaneous",
     "version",
     "versioning"
   ],

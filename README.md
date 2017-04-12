@@ -1,4 +1,4 @@
-# multi-tool <sub><sup>| Install and require multiple NPM package versions<sup></sub>
+# multi-tool <sub><sup>| Install and require multiple simultaneous versions of any NPM package<sup></sub>
 [![version](http://img.shields.io/badge/version-0.4.2-blue.svg)](https://www.npmjs.com/package/multi-tool)
 [![versioning](http://img.shields.io/badge/versioning-semver-blue.svg)](http://semver.org/)
 [![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/)

@@ -14,7 +14,7 @@ const installDefault = multi({path: 'node_modules'});
 const installAlways = multi({delay: 10000, path: 'node_modules', invalidate: always, timeout: 25000});
 const installNever = multi({delay: 10000, path: 'node_modules', invalidate: never, timeout: 25000});
 
-test.before(() => shell('npm', ['prune']));
+test.before(() => shell('yarn', ['install', '--force', '--ignore-scripts', '--prefer-offline']));
 
 test('installing a valid package with latest version should return Right', async t => {
 	const install = fromEither({}, await installDefault('ramda', 'latest'));

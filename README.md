@@ -1,4 +1,4 @@
-# multi-tool <sub><sup>| Install and require multiple versions of NPM packages<sup></sub>
+# multi-tool <sub><sup>| Install and require multiple simultaneous versions of any NPM package<sup></sub>
 [![version](http://img.shields.io/badge/version-0.4.2-blue.svg)](https://www.npmjs.com/package/multi-tool)
 [![versioning](http://img.shields.io/badge/versioning-semver-blue.svg)](http://semver.org/)
 [![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/)
@@ -7,7 +7,7 @@
 [![build](https://circleci.com/gh/cloud-elements/multi-tool.svg?style=shield)](https://circleci.com/gh/cloud-elements/multi-tool)
 
 Install multiple versions of NPM packages at runtime. Use any semver ranges which are also a valid (Li|U)nix directory
-names as your versions and `require` them intuitively (e.g. `require('ramda@0.23.x')`, `require('ramda@~0.22.1')`,
+names as your version and `require` them intuitively (e.g. `require('ramda@0.23.x')`, `require('ramda@~0.22.1')`,
 `require('ramda@latest')`). Leverage custom invalidators to automatically keep installed packages up-to-date.
 
 ## Install
@@ -18,9 +18,19 @@ $ yarn add multi-tool
 ```
 
 ## Usage
-An options object is required to configure before using. However, only `path` is required:
+### Require:
+An options object is required to configure before using, only `path` is required.
 ```javascript
-const options = {delay: 2500, path: 'node_modules', invalidate: () => true, timeout: 60000};
+const options = {
+  // Path to install against
+  path: 'node_modules',
+  // Function used to determine if package should be invalidated and reinstalled when already installed
+  invalidate: (name, version, age) => age >= Number.MAX_SAFE_INTEGER,
+  // Milliseconds to delay when an install is already occurring before reattempting
+  delay: 2500,
+  // Milliseconds maximum to delay before an install is considered failed if an install is already occurring
+  timeout: 60000
+};
 const install = require('multi-tool')(options);
 ```
 

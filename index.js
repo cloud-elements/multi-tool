@@ -21,7 +21,7 @@ const remove = async path => {
 	} catch (err) {}
 };
 const stat = tryCatch(fs.statSync, always({}));
-const touch = path => fs.closeSync(fs.openSync(path, 'w'));
+const touch = path => fs.closeSync(fs.openSync(path, 'w', 0o644));
 
 const lock = path => touch(path);
 const install = async (path, name, version) => {
@@ -46,8 +46,8 @@ const clean = path => remove(path);
 const unlock = clean;
 
 const attempt = async ({delay, invalidate, path, timeout}, name, version, delayed) => {
-	if (delayed >= timeout) {
-		return Left('Non-performant install');
+	if (delayed > timeout) {
+		return Left(new Error('Delayed exceeds timeout'));
 	}
 
 	const date = new Date();
@@ -91,7 +91,7 @@ const attempt = async ({delay, invalidate, path, timeout}, name, version, delaye
 			await clean(installingPath);
 			await unlock(lockedPath);
 
-			return Left(err.message);
+			return Left(err);
 		}
 	} else {
 		await sleep(delay);

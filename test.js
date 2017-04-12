@@ -2,7 +2,7 @@
 
 const test = require('ava');
 const shell = require('execa');
-const {filter, identity, map} = require('ramda');
+const {filter, identity, is, map} = require('ramda');
 const {create, env} = require('sanctuary');
 const multi = require('.');
 
@@ -14,7 +14,10 @@ const installDefault = multi({path: 'node_modules'});
 const installAlways = multi({delay: 10000, path: 'node_modules', invalidate: always, timeout: 25000});
 const installNever = multi({delay: 10000, path: 'node_modules', invalidate: never, timeout: 25000});
 
-test.before(() => shell('yarn', ['install', '--force', '--ignore-scripts', '--prefer-offline']));
+const prune = () => shell('yarn', ['install', '--force', '--ignore-scripts', '--prefer-offline']);
+
+test.before(prune);
+test.after(prune);
 
 test('installing a valid package with latest version should return Right', async t => {
 	const install = fromEither({}, await installDefault('ramda', 'latest'));
@@ -103,21 +106,25 @@ test('installing a package with a never invalidator should return Right', async 
 test('installing a non-existent package with an always invalidator should return Left', async t => {
 	const install = await installAlways('package-doesnt-exist', '0.0.0');
 	t.true(isLeft(install));
+	t.true(is(Error, either(identity, identity)(install)));
 });
 
 test('installing a non-existent package version with an always invalidator should return Left', async t => {
 	const install = await installAlways('ramda', '99.99.99');
 	t.true(isLeft(install));
+	t.true(is(Error, either(identity, identity)(install)));
 });
 
 test('installing a non-existent package with a never invalidator should return Left', async t => {
 	const install = await installNever('package-doesnt-exist', '0.0.0');
 	t.true(isLeft(install));
+	t.true(is(Error, either(identity, identity)(install)));
 });
 
 test('installing a non-existent package version with a never invalidator should return Left', async t => {
 	const install = await installNever('ramda', '99.99.99');
 	t.true(isLeft(install));
+	t.true(is(Error, either(identity, identity)(install)));
 });
 
 test('installing a valid package numerous times concurrently less than timeout should return Right', async t => {
@@ -133,7 +140,7 @@ test('installing a valid package numerous times concurrently less than timeout s
 	t.true(delayedGreaterThan0.installed);
 });
 
-test('installing a valid package numerous times concurrently greater than timeout should return Right', async t => {
+test('installing a valid package numerous times concurrently greater than timeout should return Left', async t => {
 	const toInstall = [
 		installAlways('ramda', '0.20.0'),
 		installAlways('ramda', '0.20.0'),
@@ -142,7 +149,7 @@ test('installing a valid package numerous times concurrently greater than timeou
 		installAlways('ramda', '0.20.0')
 	];
 	const installs = map(either(identity, identity), await Promise.all(toInstall));
-	const delayedMaximum = filter(i => i === 'Non-performant install', installs)[0];
+	const delayedMaximum = filter(i => is(Error, i) && i.message === 'Delayed exceeds timeout', installs)[0];
 
 	t.truthy(delayedMaximum);
 });

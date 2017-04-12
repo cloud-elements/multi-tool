@@ -1,22 +1,24 @@
 {
   "dependencies": {
-    "date-fns": "1.28.x",
-    "es7-sleep": "1.x",
-    "execa": "0.6.x",
-    "fs-extra": "2.x",
-    "graceful-fs": "4.x",
-    "pify": "2.x",
-    "ramda": "0.23.x",
-    "sanctuary": "0.12.x"
+    "date-fns": "1.28.2",
+    "es7-sleep": "1.0.0",
+    "execa": "0.6.3",
+    "fs-extra": "2.1.2",
+    "graceful-fs": "4.1.11",
+    "pify": "2.3.0",
+    "ramda": "0.23.0",
+    "sanctuary": "0.12.2"
   },
   "description": "Install and require multiple versions of NPM packages",
   "devDependencies": {
-    "ava": "0.19.x",
-    "npm-check": "5.x",
-    "nyc": "10.x",
-    "xo": "0.18.x"
+    "ava": "0.19.1",
+    "npm-check": "5.4.0",
+    "nyc": "10.2.0",
+    "xo": "0.19.0"
   },
-  "engines": {"node": "^7.6.0"},
+  "engines": {
+    "node": ">=7.6.0"
+  },
   "homepage": "https://github.com/cloud-elements/multi-tool",
   "keywords": [
     "install",
@@ -44,7 +46,6 @@
     "url": "git://github.com/cloud-elements/multi-tool.git"
   },
   "scripts": {
-    "clean": "rm -rf .nyc_output && rm -rf coverage && rm -rf node_modules",
     "cover": "nyc report --reporter=text-lcov",
     "coverage": "nyc report --reporter=lcov && open ./coverage/lcov-report/index.html",
     "depend": "npm-check --ignore ramda* --ignore @rockymadden/now-go*",

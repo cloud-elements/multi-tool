@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+npm-check --ignore conventional-changelog-cli --ignore npm-check --ignore nsp --ignore nyc --ignore xo

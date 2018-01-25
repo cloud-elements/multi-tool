@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+mkdir -p ./.nyc_output
+nyc --clean=false --silent ava 'test/large/**/*.js' --fail-fast --timeout=120s --verbose
